@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Userscript Builder</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Google+Sans+Display:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+:root {
+  --md-sys-color-primary: #D0BCFF;
+  --md-sys-color-on-primary: #381E72;
+  --md-sys-color-primary-container: #4F378B;
+  --md-sys-color-on-primary-container: #EADDFF;
+  --md-sys-color-secondary: #CCC2DC;
+  --md-sys-color-on-secondary: #332D41;
+  --md-sys-color-secondary-container: #4A4458;
+  --md-sys-color-on-secondary-container: #E8DEF8;
+  --md-sys-color-tertiary: #EFB8C8;
+  --md-sys-color-on-tertiary: #492532;
+  --md-sys-color-tertiary-container: #633B48;
+  --md-sys-color-on-tertiary-container: #FFD8E4;
+  --md-sys-color-error: #F2B8B5;
+  --md-sys-color-error-container: #8C1D18;
+  --md-sys-color-on-error: #601410;
+  --md-sys-color-on-error-container: #F9DEDC;
+  --md-sys-color-background: #141218;
+  --md-sys-color-on-background: #E6E0E9;
+  --md-sys-color-surface: #141218;
+  --md-sys-color-on-surface: #E6E0E9;
+  --md-sys-color-surface-variant: #49454F;
+  --md-sys-color-on-surface-variant: #CAC4D0;
+  --md-sys-color-outline: #938F99;
+  --md-sys-color-outline-variant: #49454F;
+  --md-sys-color-inverse-surface: #E6E0E9;
+  --md-sys-color-inverse-on-surface: #322F35;
+  --md-sys-color-surface-container-highest: #36343B;
+  --md-sys-color-surface-container-high: #2B2930;
+  --md-sys-color-surface-container: #211F26;
+  --md-sys-color-surface-container-low: #1D1B20;
+  --md-sys-color-surface-container-lowest: #0F0D13;
+  --md-sys-color-shadow: rgba(0,0,0,0.6);
+  --md-ref-typeface-brand: 'Google Sans', sans-serif;
+  --md-ref-typeface-plain: 'Google Sans', sans-serif;
+  --md-ref-typeface-mono: 'Roboto Mono', monospace;
+  --elevation-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  --elevation-2: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+  --elevation-3: 0 1px 3px rgba(0,0,0,0.3), 0 4px 8px 3px rgba(0,0,0,0.15);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--md-ref-typeface-plain);
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.nav-rail {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 80px;
+  background: var(--md-sys-color-surface-container-low);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0 16px;
+  z-index: 100;
+}
+
+.nav-rail-logo {
+  width: 48px; height: 48px;
+  background: var(--md-sys-color-primary-container);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24px;
+}
+
+.nav-rail-logo .material-icons-round { color: var(--md-sys-color-on-primary-container); font-size: 24px; }
+
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 12px 0; width: 100%; cursor: pointer;
+  position: relative;
+}
+
+.nav-item .nav-indicator {
+  width: 56px; height: 32px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+
+.nav-item:hover .nav-indicator { background: rgba(103,80,164,0.08); }
+.nav-item.active .nav-indicator { background: var(--md-sys-color-secondary-container); }
+.nav-item .material-icons-round { font-size: 22px; color: var(--md-sys-color-on-surface-variant); }
+.nav-item.active .material-icons-round { color: var(--md-sys-color-on-secondary-container); }
+.nav-item span.label { font-size: 11px; color: var(--md-sys-color-on-surface-variant); letter-spacing: 0.01em; }
+.nav-item.active span.label { color: var(--md-sys-color-on-surface); font-weight: 500; }
+
+.app-shell {
+  margin-left: 80px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.top-bar {
+  height: 64px;
+  background: var(--md-sys-color-surface-container-low);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.top-bar h1 {
+  font-family: var(--md-ref-typeface-brand);
+  font-size: 22px; font-weight: 400;
+  color: var(--md-sys-color-on-surface);
+  flex: 1;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 0;
+  flex: 1;
+  padding: 20px 24px 24px;
+  gap: 20px;
+  align-items: start;
+}
+
+.m3-card {
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--elevation-1);
+  margin-bottom: 16px;
+}
+
+.m3-card-header {
+  padding: 16px 16px 0;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.m3-card-header .material-icons-round {
+  font-size: 20px;
+  color: var(--md-sys-color-primary);
+}
+
+.m3-card-title {
+  font-size: 14px; font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+  flex: 1;
+}
+
+.m3-card-subtitle {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.m3-card-body { padding: 12px 16px 16px; }
+
+.drop-zone {
+  border: 2px dashed var(--md-sys-color-outline-variant);
+  border-radius: 12px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--md-sys-color-surface-container-lowest);
+}
+
+.drop-zone:hover, .drop-zone.over {
+  border-color: var(--md-sys-color-primary);
+  background: rgba(103,80,164,0.05);
+}
+
+.drop-zone .dz-icon {
+  font-size: 36px;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.drop-zone p { font-size: 13px; color: var(--md-sys-color-on-surface-variant); margin-bottom: 10px; }
+
+.file-chips { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+
+.file-chip {
+  display: flex; align-items: center; gap: 0;
+  background: var(--md-sys-color-secondary-container);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 40px;
+}
+
+.file-chip-icon {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-chip-icon .material-icons-round { font-size: 18px; color: var(--md-sys-color-on-secondary-container); }
+
+.file-chip-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--md-sys-color-on-secondary-container);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding-right: 4px;
+}
+
+.file-chip-size {
+  font-size: 11px;
+  color: var(--md-sys-color-secondary);
+  padding: 0 8px;
+  flex-shrink: 0;
+  font-family: var(--md-ref-typeface-mono);
+}
+
+.file-chip-actions { display: flex; flex-shrink: 0; }
+
+.chip-btn {
+  width: 36px; height: 40px;
+  background: none; border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--md-sys-color-on-secondary-container);
+  opacity: 0.7;
+  border-radius: 0;
+  transition: background 0.15s, opacity 0.15s;
+  position: relative; overflow: hidden;
+}
+
+.chip-btn:hover { background: rgba(0,0,0,0.06); opacity: 1; }
+.chip-btn .material-icons-round { font-size: 16px; }
+
+.theme-chip {
+  display: flex; align-items: center; gap: 0;
+  background: var(--md-sys-color-tertiary-container);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 40px;
+}
+
+.theme-chip-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.theme-chip-icon .material-icons-round { font-size: 18px; color: var(--md-sys-color-on-tertiary-container); }
+.theme-chip-name { flex: 1; font-size: 13px; color: var(--md-sys-color-on-tertiary-container); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.theme-chip-size { font-size: 11px; color: var(--md-sys-color-tertiary); padding: 0 8px; flex-shrink: 0; font-family: var(--md-ref-typeface-mono); }
+
+.theme-toggle {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 10px;
+  font-size: 11px;
+  color: var(--md-sys-color-on-tertiary-container);
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.m3-switch {
+  position: relative;
+  width: 52px; height: 32px;
+  flex-shrink: 0;
+}
+
+.m3-switch input { display: none; }
+
+.m3-switch-track {
+  width: 52px; height: 32px;
+  border-radius: 16px;
+  background: var(--md-sys-color-surface-variant);
+  border: 2px solid var(--md-sys-color-outline);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  position: relative;
+}
+
+.m3-switch input:checked ~ .m3-switch-track {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.m3-switch-thumb {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  left: 4px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--md-sys-color-outline);
+  transition: left 0.2s, width 0.15s, background 0.2s;
+  pointer-events: none;
+}
+
+.m3-switch input:checked ~ .m3-switch-track .m3-switch-thumb {
+  left: 28px;
+  width: 24px; height: 24px;
+  top: 50%; transform: translate(0,-50%);
+  left: 24px;
+  background: var(--md-sys-color-on-primary);
+}
+
+.m3-field {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.m3-field label {
+  position: absolute;
+  top: -8px; left: 10px;
+  background: var(--md-sys-color-surface-container-low);
+  padding: 0 4px;
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.m3-field input, .m3-field select {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 4px;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-ref-typeface-plain);
+  font-size: 14px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+
+.m3-field input:focus, .m3-field select:focus {
+  border-color: var(--md-sys-color-primary);
+  border-width: 2px;
+}
+
+.m3-field input:focus ~ label, .m3-field select:focus ~ label {
+  color: var(--md-sys-color-primary);
+}
+
+.m3-field select option { background: #fff; }
+
+.opts-list { display: flex; flex-direction: column; gap: 0; }
+
+.opt-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.opt-row:last-child { border-bottom: none; }
+.opt-row:hover { background: rgba(103,80,164,0.04); }
+
+.opt-row-text { display: flex; flex-direction: column; gap: 1px; }
+.opt-row-label { font-size: 14px; color: var(--md-sys-color-on-surface); }
+.opt-row-desc { font-size: 11px; color: var(--md-sys-color-on-surface-variant); }
+
+.m3-checkbox {
+  width: 18px; height: 18px;
+  position: relative; flex-shrink: 0;
+}
+
+.m3-checkbox input { display: none; }
+
+.m3-checkbox-box {
+  width: 18px; height: 18px;
+  border: 2px solid var(--md-sys-color-outline);
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  background: transparent;
+}
+
+.m3-checkbox input:checked ~ .m3-checkbox-box {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.m3-checkbox-box::after {
+  content: '';
+  width: 4px; height: 8px;
+  border: 2px solid transparent;
+  border-top: none; border-left: none;
+  transform: rotate(45deg) translate(-1px,-1px);
+  transition: border-color 0.1s;
+}
+
+.m3-checkbox input:checked ~ .m3-checkbox-box::after {
+  border-color: #fff;
+}
+
+.m3-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 24px; height: 40px;
+  border-radius: 20px;
+  font-family: var(--md-ref-typeface-plain);
+  font-size: 14px; font-weight: 500;
+  letter-spacing: 0.01em;
+  border: none; cursor: pointer;
+  transition: box-shadow 0.2s, background 0.15s;
+  position: relative; overflow: hidden;
+}
+
+.m3-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s;
+  border-radius: inherit;
+}
+
+.m3-btn:hover::after { opacity: 0.08; }
+.m3-btn:active::after { opacity: 0.12; }
+
+.m3-btn-filled {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  box-shadow: var(--elevation-1);
+}
+
+.m3-btn-filled:hover { box-shadow: var(--elevation-2); }
+
+.m3-btn-tonal {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.m3-btn-outlined {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline);
+}
+
+.m3-btn-text {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  padding: 0 12px;
+}
+
+.m3-btn-danger {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
+.m3-btn .material-icons-round { font-size: 18px; }
+
+.btn-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.code-surface {
+  background: var(--md-sys-color-surface-container-highest);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.code-surface-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--md-sys-color-surface-container-high);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.code-surface-bar span {
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--md-ref-typeface-mono);
+}
+
+textarea.code-out {
+  display: block;
+  width: 100%;
+  height: 300px;
+  background: transparent;
+  border: none;
+  color: #86c98a;
+  font-family: var(--md-ref-typeface-mono);
+  font-size: 12px;
+  line-height: 1.65;
+  padding: 16px;
+  resize: vertical;
+  outline: none;
+}
+
+.stat-row {
+  display: flex; gap: 8px;
+  padding: 0 0 12px;
+}
+
+.stat-card {
+  flex: 1;
+  background: var(--md-sys-color-primary-container);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.stat-val { font-size: 24px; font-weight: 500; color: var(--md-sys-color-on-primary-container); line-height: 1; margin-bottom: 2px; }
+.stat-lbl { font-size: 11px; color: var(--md-sys-color-primary); letter-spacing: 0.03em; }
+
+.order-list { display: flex; flex-direction: column; gap: 2px; }
+
+.order-list-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--md-sys-color-surface-container);
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface);
+}
+
+.order-list-item .num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500;
+  flex-shrink: 0;
+}
+
+.order-list-item .oname {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.empty-state {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.divider { height: 1px; background: var(--md-sys-color-outline-variant); margin: 0; }
+
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
+</style>
+</head>
+<body>
+
+<nav class="nav-rail">
+  <div class="nav-rail-logo">
+    <span class="material-icons-round">code</span>
+  </div>
+  <div class="nav-item active">
+    <div class="nav-indicator">
+      <span class="material-icons-round">build</span>
+    </div>
+    <span class="label">Builder</span>
+  </div>
+  <div class="nav-item">
+    <div class="nav-indicator">
+      <span class="material-icons-round">preview</span>
+    </div>
+    <span class="label">Preview</span>
+  </div>
+</nav>
+
+<div class="app-shell">
+  <div class="top-bar">
+    <h1>Userscript Builder</h1>
+    <button class="m3-btn m3-btn-outlined" id="addRemote">
+      <span class="material-icons-round">add_link</span> Remote URL
+    </button>
+    <button class="m3-btn m3-btn-danger" id="clear">
+      <span class="material-icons-round">delete_sweep</span> Clear all
+    </button>
+  </div>
+
+  <div class="content">
+    <div class="left-col">
+
+      <!-- JS Files -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <span class="material-icons-round">javascript</span>
+          <span class="m3-card-title">JavaScript Files</span>
+          <span class="m3-card-subtitle" id="js-count">0 files</span>
+        </div>
+        <div class="m3-card-body">
+          <div id="drop" class="drop-zone" tabindex="0">
+            <span class="material-icons-round dz-icon">upload_file</span>
+            <p>Drag &amp; drop <strong>.js</strong> files here, or paste code anywhere</p>
+            <button class="m3-btn m3-btn-tonal" id="chooseJs">
+              <span class="material-icons-round">folder_open</span> Browse files
+            </button>
+          </div>
+          <input id="jsFileInput" type="file" accept=".js" multiple style="display:none"/>
+          <div class="file-chips" id="filelist"></div>
+        </div>
+      </div>
+
+      <!-- CSS Themes -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <span class="material-icons-round">palette</span>
+          <span class="m3-card-title">CSS Themes</span>
+          <span class="m3-card-subtitle" id="css-count">0 themes</span>
+        </div>
+        <div class="m3-card-body">
+          <div id="cssDrop" class="drop-zone" tabindex="0">
+            <span class="material-icons-round dz-icon">style</span>
+            <p>Drag &amp; drop <strong>.css</strong> theme files here</p>
+            <button class="m3-btn m3-btn-tonal" id="chooseCss">
+              <span class="material-icons-round">folder_open</span> Browse files
+            </button>
+          </div>
+          <input id="cssFileInput" type="file" accept=".css" multiple style="display:none"/>
+          <div class="file-chips" id="themesList"></div>
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <span class="material-icons-round">info</span>
+          <span class="m3-card-title">Script Metadata</span>
+        </div>
+        <div class="m3-card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="m3-field">
+            <label>Script name</label>
+            <input id="scriptName" type="text" value="Combined Userscript" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="m3-field">
+            <label>Version</label>
+            <input id="version" type="text" value="1.0" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="m3-field">
+            <label>@match pattern</label>
+            <input id="matchPattern" type="text" placeholder="*://example.com/*" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="m3-field">
+            <label>@run-at</label>
+            <select id="runAt">
+              <option value="document-start">document-start</option>
+              <option value="document-end">document-end</option>
+              <option value="document-idle">document-idle</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Build options -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <span class="material-icons-round">tune</span>
+          <span class="m3-card-title">Build Options</span>
+        </div>
+        <div class="opts-list">
+          <label class="opt-row">
+            <div class="opt-row-text">
+              <span class="opt-row-label">Auto-wrap IIFEs</span>
+              <span class="opt-row-desc">Wrap files missing an immediately-invoked function expression</span>
+            </div>
+            <div class="m3-checkbox">
+              <input id="autoWrap" type="checkbox" checked>
+              <div class="m3-checkbox-box"></div>
+            </div>
+          </label>
+          <div class="divider"></div>
+          <label class="opt-row">
+            <div class="opt-row-text">
+              <span class="opt-row-label">Per-file run-guard</span>
+              <span class="opt-row-desc">Prevent each file from executing more than once</span>
+            </div>
+            <div class="m3-checkbox">
+              <input id="addGuards" type="checkbox" checked>
+              <div class="m3-checkbox-box"></div>
+            </div>
+          </label>
+          <div class="divider"></div>
+          <label class="opt-row">
+            <div class="opt-row-text">
+              <span class="opt-row-label">Strip comments</span>
+              <span class="opt-row-desc">Remove // and /* */ comments from output</span>
+            </div>
+            <div class="m3-checkbox">
+              <input id="minify" type="checkbox">
+              <div class="m3-checkbox-box"></div>
+            </div>
+          </label>
+          <div class="divider"></div>
+          <label class="opt-row">
+            <div class="opt-row-text">
+              <span class="opt-row-label">Keep "use strict"</span>
+              <span class="opt-row-desc">Preserve strict mode declarations in output</span>
+            </div>
+            <div class="m3-checkbox">
+              <input id="preserveStrict" type="checkbox" checked>
+              <div class="m3-checkbox-box"></div>
+            </div>
+          </label>
+        </div>
+        <div class="m3-card-body" style="padding-top:12px">
+          <div class="btn-row">
+            <button class="m3-btn m3-btn-filled" id="build">
+              <span class="material-icons-round">rocket_launch</span> Build &amp; Download
+            </button>
+            <button class="m3-btn m3-btn-tonal" id="previewBtn">
+              <span class="material-icons-round">visibility</span> Preview
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output -->
+      <div class="m3-card">
+        <div class="m3-card-header" style="padding-bottom:12px">
+          <span class="material-icons-round">terminal</span>
+          <span class="m3-card-title">Output</span>
+          <span class="m3-card-subtitle" id="preview-lines">—</span>
+        </div>
+        <div style="padding:0 16px 16px">
+          <div class="code-surface">
+            <div class="code-surface-bar">
+              <span>generated .user.js</span>
+              <button class="m3-btn m3-btn-text" id="downloadSource" style="height:32px;font-size:12px">
+                <span class="material-icons-round" style="font-size:16px">download</span> Save
+              </button>
+            </div>
+            <textarea class="code-out" id="preview" placeholder="// Output will appear here after Preview or Build..." readonly></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="right-col">
+
+      <!-- Stats -->
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-js">0</div>
+          <div class="stat-lbl">JS Files</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-css">0</div>
+          <div class="stat-lbl">Themes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-kb">0</div>
+          <div class="stat-lbl">KB total</div>
+        </div>
+      </div>
+
+      <!-- File order -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <span class="material-icons-round">sort</span>
+          <span class="m3-card-title">Execution Order</span>
+        </div>
+        <div class="m3-card-body">
+          <div class="order-list" id="filesArea">
+            <div class="empty-state">No JS files loaded</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Themes detail -->
+      <div class="m3-card">
+        <div class="m3-card-header">
+          <span class="material-icons-round">layers</span>
+          <span class="m3-card-title">Loaded Themes</span>
+        </div>
+        <div class="m3-card-body">
+          <div class="order-list" id="themesArea">
+            <div class="empty-state">No CSS themes loaded</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const jsFiles = []
+  const themes = []
+  const filelistEl = document.getElementById('filelist')
+  const filesArea = document.getElementById('filesArea')
+  const themesList = document.getElementById('themesList')
+  const themesArea = document.getElementById('themesArea')
+  const previewEl = document.getElementById('preview')
+
+  const metaIds = ['scriptName','version','matchPattern','runAt']
+  metaIds.forEach(id => {
+    const el = document.getElementById(id)
+    if(!el) return
+    el.addEventListener('paste', e => e.stopPropagation())
+    el.addEventListener('keydown', e => e.stopPropagation())
+    el.addEventListener('focus', () => { document._pasteBlocked = true })
+    el.addEventListener('blur', () => { document._pasteBlocked = false })
+  })
+
+  function makeId(name){
+    return name.toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'') || ('FILE_'+Math.random().toString(36).slice(2,8).toUpperCase())
+  }
+
+  function readFile(f){
+    return new Promise((res,rej) => {
+      const r = new FileReader()
+      r.onload = () => res(String(r.result))
+      r.onerror = () => rej(r.error)
+      r.readAsText(f)
+    })
+  }
+
+  function fmtBytes(n){
+    if(n < 1024) return n+'b'
+    return (n/1024).toFixed(1)+'k'
+  }
+
+  function updateStats(){
+    document.getElementById('stat-js').textContent = jsFiles.length
+    document.getElementById('stat-css').textContent = themes.length
+    const total = jsFiles.reduce((a,f)=>a+(f.text||'').length,0) + themes.reduce((a,t)=>a+(t.css||'').length,0)
+    document.getElementById('stat-kb').textContent = (total/1024).toFixed(1)
+    document.getElementById('js-count').textContent = jsFiles.length + ' file' + (jsFiles.length!==1?'s':'')
+    document.getElementById('css-count').textContent = themes.length + ' theme' + (themes.length!==1?'s':'')
+  }
+
+  function refreshLists(){
+    filelistEl.innerHTML = ''
+    filesArea.innerHTML = ''
+    themesList.innerHTML = ''
+    themesArea.innerHTML = ''
+
+    if(!jsFiles.length) filesArea.innerHTML = '<div class="empty-state">No JS files loaded</div>'
+
+    jsFiles.forEach((f,idx) => {
+      const chip = document.createElement('div')
+      chip.className = 'file-chip'
+
+      const icon = document.createElement('div')
+      icon.className = 'file-chip-icon'
+      icon.innerHTML = '<span class="material-icons-round">insert_drive_file</span>'
+
+      const name = document.createElement('div')
+      name.className = 'file-chip-name'
+      name.textContent = f.name
+
+      const size = document.createElement('div')
+      size.className = 'file-chip-size'
+      size.textContent = fmtBytes((f.text||'').length)
+
+      const actions = document.createElement('div')
+      actions.className = 'file-chip-actions'
+
+      const up = document.createElement('button')
+      up.className = 'chip-btn'
+      up.title = 'Move up'
+      up.innerHTML = '<span class="material-icons-round">arrow_upward</span>'
+      up.onclick = () => { if(idx>0){ jsFiles.splice(idx,1); jsFiles.splice(idx-1,0,f); refreshLists() } }
+
+      const down = document.createElement('button')
+      down.className = 'chip-btn'
+      down.title = 'Move down'
+      down.innerHTML = '<span class="material-icons-round">arrow_downward</span>'
+      down.onclick = () => { if(idx<jsFiles.length-1){ jsFiles.splice(idx,1); jsFiles.splice(idx+1,0,f); refreshLists() } }
+
+      const del = document.createElement('button')
+      del.className = 'chip-btn'
+      del.title = 'Remove'
+      del.innerHTML = '<span class="material-icons-round">close</span>'
+      del.onclick = () => { jsFiles.splice(idx,1); refreshLists() }
+
+      actions.appendChild(up)
+      actions.appendChild(down)
+      actions.appendChild(del)
+      chip.appendChild(icon)
+      chip.appendChild(name)
+      chip.appendChild(size)
+      chip.appendChild(actions)
+      filelistEl.appendChild(chip)
+
+      const oitem = document.createElement('div')
+      oitem.className = 'order-list-item'
+      oitem.innerHTML = `<div class="num">${idx+1}</div><div class="oname">${f.name}</div>`
+      filesArea.appendChild(oitem)
+    })
+
+    if(!themes.length) themesArea.innerHTML = '<div class="empty-state">No CSS themes loaded</div>'
+
+    themes.forEach((t,idx) => {
+      const chip = document.createElement('div')
+      chip.className = 'theme-chip'
+
+      const icon = document.createElement('div')
+      icon.className = 'theme-chip-icon'
+      icon.innerHTML = '<span class="material-icons-round">brush</span>'
+
+      const name = document.createElement('div')
+      name.className = 'theme-chip-name'
+      name.textContent = t.name
+
+      const size = document.createElement('div')
+      size.className = 'theme-chip-size'
+      size.textContent = fmtBytes((t.css||'').length)
+
+      const togWrap = document.createElement('div')
+      togWrap.className = 'theme-toggle'
+
+      const sw = document.createElement('label')
+      sw.className = 'm3-switch'
+      const cb = document.createElement('input')
+      cb.type = 'checkbox'
+      cb.checked = !!t.enabled
+      cb.onchange = () => { t.enabled = cb.checked }
+      const track = document.createElement('div')
+      track.className = 'm3-switch-track'
+      const thumb = document.createElement('div')
+      thumb.className = 'm3-switch-thumb'
+      track.appendChild(thumb)
+      sw.appendChild(cb)
+      sw.appendChild(track)
+      togWrap.appendChild(sw)
+
+      const del = document.createElement('button')
+      del.className = 'chip-btn'
+      del.title = 'Remove'
+      del.innerHTML = '<span class="material-icons-round">close</span>'
+      del.onclick = () => { themes.splice(idx,1); refreshLists() }
+
+      chip.appendChild(icon)
+      chip.appendChild(name)
+      chip.appendChild(size)
+      chip.appendChild(togWrap)
+      chip.appendChild(del)
+      themesList.appendChild(chip)
+
+      const oitem = document.createElement('div')
+      oitem.className = 'order-list-item'
+      oitem.style.background = 'var(--md-sys-color-tertiary-container)'
+      oitem.innerHTML = `<div class="num" style="background:var(--md-sys-color-tertiary)">${idx+1}</div><div class="oname" style="color:var(--md-sys-color-on-tertiary-container)">${t.name}</div>`
+      themesArea.appendChild(oitem)
+    })
+
+    updateStats()
+  }
+
+  const drop = document.getElementById('drop')
+  const jsFileInput = document.getElementById('jsFileInput')
+  window.addEventListener('dragover', e => e.preventDefault())
+  window.addEventListener('drop', e => e.preventDefault())
+
+  function handleJsFiles(list){
+    const arr = Array.from(list).filter(f => f.name.toLowerCase().endsWith('.js'))
+    let done = 0
+    if(!arr.length){ refreshLists(); return }
+    arr.forEach(async f => {
+      try { const text = await readFile(f); jsFiles.push({id:makeId(f.name),name:f.name,text,autoWrap:true,addGuard:true}) } catch(e){}
+      if(++done===arr.length) refreshLists()
+    })
+  }
+
+  drop.addEventListener('dragenter', e => { e.preventDefault(); drop.classList.add('over') })
+  drop.addEventListener('dragleave', e => { e.preventDefault(); drop.classList.remove('over') })
+  drop.addEventListener('dragover', e => e.preventDefault())
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); if(e.dataTransfer.files.length) handleJsFiles(e.dataTransfer.files) })
+  document.getElementById('chooseJs').addEventListener('click', e => { e.stopPropagation(); jsFileInput.click() })
+  jsFileInput.addEventListener('change', e => { handleJsFiles(e.target.files); jsFileInput.value = '' })
+
+  const cssDrop = document.getElementById('cssDrop')
+  const cssFileInput = document.getElementById('cssFileInput')
+
+  function handleCssFiles(list){
+    const arr = Array.from(list).filter(f => f.name.toLowerCase().endsWith('.css'))
+    let done = 0
+    if(!arr.length){ refreshLists(); return }
+    arr.forEach(async f => {
+      try { const text = await readFile(f); themes.push({id:makeId(f.name),name:f.name,css:text,enabled:true}) } catch(e){}
+      if(++done===arr.length) refreshLists()
+    })
+  }
+
+  cssDrop.addEventListener('dragenter', e => { e.preventDefault(); cssDrop.classList.add('over') })
+  cssDrop.addEventListener('dragleave', e => { e.preventDefault(); cssDrop.classList.remove('over') })
+  cssDrop.addEventListener('dragover', e => e.preventDefault())
+  cssDrop.addEventListener('drop', e => { e.preventDefault(); cssDrop.classList.remove('over'); if(e.dataTransfer.files.length) handleCssFiles(e.dataTransfer.files) })
+  document.getElementById('chooseCss').addEventListener('click', e => { e.stopPropagation(); cssFileInput.click() })
+  cssFileInput.addEventListener('change', e => { handleCssFiles(e.target.files); cssFileInput.value = '' })
+
+  document.getElementById('addRemote').onclick = async () => {
+    const url = prompt('Remote JS URL:')
+    if(!url) return
+    try {
+      const res = await fetch(url)
+      if(!res.ok) throw new Error('fetch failed')
+      const txt = await res.text()
+      const name = url.split('/').pop().split('?')[0] || url
+      jsFiles.push({id:makeId(name),name,text:txt,autoWrap:true,addGuard:true})
+      refreshLists()
+    } catch(err){ alert('Failed: '+err) }
+  }
+
+  document.getElementById('clear').onclick = () => {
+    if(!confirm('Clear everything?')) return
+    jsFiles.length = 0; themes.length = 0; refreshLists()
+    previewEl.value = ''
+    document.getElementById('preview-lines').textContent = '—'
+  }
+
+  function simpleMinify(s, preserveStrict){
+    try {
+      s = s.replace(/\/\*[\s\S]*?\*\//g, '')
+      s = s.replace(/^[ \t]*\/\/.*$/gm, '')
+      s = s.replace(/([^:])\/\/(?!['"`]).*$/gm, '$1')
+      if(!preserveStrict) s = s.replace(/['"]use strict['"];?/g, '')
+      s = s.replace(/\n{3,}/g, '\n\n')
+      s = s.split('\n').map(l => l.replace(/\s+$/,'')).join('\n')
+      return s.trim()
+    } catch(e){ return s }
+  }
+
+  function hasIIFE(text){ return /\(\s*function[\s\S]*?\)\s*\(|\(\s*async\s+function[\s\S]*?\)\s*\(|^\(function\s*\(/.test(text) }
+  function hasGuard(text){ return /window\.__US_BUILDER_[A-Z0-9_]+__/.test(text) }
+
+  function wrapFile(f, opts){
+    let t = f.text || ''
+    if(opts.minify) t = simpleMinify(t, opts.preserveStrict)
+    const hasStrict = /^(['"])use strict\1;?/.test(t.trim())
+    let prefix = '', suffix = ''
+    if(f.addGuard && opts.addGuards && !hasGuard(t)) prefix += `if(window.__US_BUILDER_${f.id}__){return;}window.__US_BUILDER_${f.id}__=true;\n`
+    if(opts.autoWrapAll && f.autoWrap && !hasIIFE(t)){ prefix += '(function(){\n'; suffix = '\n})();' }
+    if(opts.preserveStrict && hasStrict){ t = t.replace(/^(['"])use strict\1;?\s*/,''); prefix += `'use strict';\n` }
+    return prefix + '\n' + t + '\n' + suffix
+  }
+
+  function buildScript(){
+    const headerName = document.getElementById('scriptName').value || 'Combined Userscript'
+    const match = document.getElementById('matchPattern').value || ''
+    const runAt = document.getElementById('runAt').value || 'document-start'
+    const version = document.getElementById('version').value || '1.0'
+    const opts = {
+      autoWrapAll: document.getElementById('autoWrap').checked,
+      addGuards: document.getElementById('addGuards').checked,
+      minify: document.getElementById('minify').checked,
+      preserveStrict: document.getElementById('preserveStrict').checked
+    }
+    let header = `// ==UserScript==\n// @name        ${headerName}\n// @namespace   userscript.builder\n// @version     ${version}\n// @description Combined userscript generated locally\n`
+    if(match) header += `// @match       ${match}\n`
+    header += `// @grant       none\n// @run-at      ${runAt}\n// ==/UserScript==\n\n`
+    let body = opts.minify ? `(function(){\n` : `(function(){\n'@preserve - Built on ${new Date().toISOString()}';\n`
+    jsFiles.forEach(f => {
+      if(!opts.minify) body += `\n/* --- ${f.name} --- */\n`
+      body += wrapFile(f, opts) + '\n'
+    })
+    if(themes.length){
+      if(!opts.minify) body += `\n/* --- Embedded Themes --- */\n`
+      body += `const __BUILDER_THEMES__ = [\n`
+      themes.forEach(t => { body += `  {id:${JSON.stringify(t.id)},name:${JSON.stringify(t.name)},css:${JSON.stringify(t.css)},enabled:${!!t.enabled}},\n` })
+      body += `];\n;(function(){\n  try{\n    __BUILDER_THEMES__.forEach(t=>{\n      const s=document.createElement('style');s.id='us-theme-'+t.id;s.textContent=t.css;\n      if(t.enabled)document.head.appendChild(s);\n    });\n  }catch(e){}\n})();\n`
+    }
+    body += `\n})();\n`
+    return header + body
+  }
+
+  document.getElementById('previewBtn').onclick = () => {
+    const out = buildScript()
+    previewEl.value = out
+    previewEl.scrollTop = 0
+    document.getElementById('preview-lines').textContent = out.split('\n').length + ' lines'
+  }
+
+  document.getElementById('build').onclick = () => {
+    if(!jsFiles.length && !themes.length){ alert('Add at least one file.'); return }
+    const out = buildScript()
+    previewEl.value = out
+    previewEl.scrollTop = 0
+    document.getElementById('preview-lines').textContent = out.split('\n').length + ' lines'
+    const blob = new Blob([out], {type:'application/javascript;charset=utf-8'})
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = (document.getElementById('scriptName').value || 'combined').replace(/\s+/g,'-') + '.user.js'
+    a.click()
+    setTimeout(() => URL.revokeObjectURL(url), 5000)
+  }
+
+  document.getElementById('downloadSource').onclick = () => {
+    const txt = previewEl.value || buildScript()
+    const blob = new Blob([txt], {type:'application/javascript;charset=utf-8'})
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url; a.download = 'userscript-preview.js'; a.click()
+    setTimeout(() => URL.revokeObjectURL(url), 5000)
+  }
+
+  document.addEventListener('paste', e => {
+    if(document._pasteBlocked) return
+    const active = document.activeElement
+    if(active && (active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.tagName==='SELECT')) return
+    const text = (e.clipboardData||window.clipboardData).getData('Text')
+    if(text && text.trim()){
+      const name = 'pasted-'+Date.now()+'.js'
+      jsFiles.push({id:makeId(name),name,text,autoWrap:true,addGuard:true})
+      refreshLists()
+    }
+  })
+
+  refreshLists()
+})();
+</script>
+</body>
+</html>
