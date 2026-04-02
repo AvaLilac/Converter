@@ -410,6 +410,7 @@ body {
   border: none; cursor: pointer;
   transition: box-shadow 0.2s, background 0.15s;
   position: relative; overflow: hidden;
+  white-space: nowrap;
 }
 
 .m3-btn::after {
@@ -452,6 +453,18 @@ body {
 .m3-btn-danger {
   background: var(--md-sys-color-error-container);
   color: var(--md-sys-color-on-error-container);
+}
+
+.m3-btn-folder {
+  background: #1E3A3A;
+  color: #80CBC4;
+  border: 1px solid #2E5C5C;
+}
+
+.m3-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .m3-btn .material-icons-round { font-size: 18px; }
@@ -542,7 +555,134 @@ textarea.code-out {
 
 .divider { height: 1px; background: var(--md-sys-color-outline-variant); margin: 0; }
 
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 500;
+  backdrop-filter: blur(2px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--md-sys-color-surface-container);
+  border-radius: 28px;
+  padding: 24px;
+  width: 560px;
+  max-width: calc(100vw - 48px);
+  box-shadow: var(--elevation-3);
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.modal-title {
+  font-size: 18px; font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+  display: flex; align-items: center; gap: 10px;
+}
+
+.modal-title .material-icons-round { color: #80CBC4; font-size: 22px; }
+
+.modal-desc {
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.6;
+}
+
+.modal-desc code {
+  font-family: var(--md-ref-typeface-mono);
+  font-size: 11px;
+  background: var(--md-sys-color-surface-container-highest);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--md-sys-color-on-surface);
+}
+
+.modal-url-field {
+  position: relative;
+}
+
+.modal-url-field input {
+  width: 100%;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 8px;
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-ref-typeface-mono);
+  font-size: 13px;
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.modal-url-field input:focus { border-color: #80CBC4; border-width: 2px; }
+.modal-url-field input::placeholder { color: var(--md-sys-color-on-surface-variant); opacity: 0.6; font-family: var(--md-ref-typeface-plain); }
+
+.modal-status {
+  min-height: 20px;
+  font-size: 12px;
+  font-family: var(--md-ref-typeface-mono);
+  color: var(--md-sys-color-on-surface-variant);
+  padding: 0 2px;
+}
+
+.modal-status.ok { color: #80CBC4; }
+.modal-status.err { color: var(--md-sys-color-error); }
+
+.modal-filelist {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px;
+  scrollbar-width: thin;
+}
+
+.modal-file-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--md-sys-color-surface-container-high);
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.modal-file-row:hover { background: var(--md-sys-color-surface-container-highest); }
+
+.modal-file-row .material-icons-round { font-size: 16px; color: var(--md-sys-color-on-surface-variant); flex-shrink: 0; }
+.modal-file-row .fname { flex: 1; font-size: 13px; color: var(--md-sys-color-on-surface); font-family: var(--md-ref-typeface-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.modal-file-row .fsize { font-size: 11px; color: var(--md-sys-color-on-surface-variant); flex-shrink: 0; }
+
+.modal-file-row .mfr-cb { flex-shrink: 0; }
+
+.modal-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+
 @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+.modal-css-toggle {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--md-sys-color-surface-container-high);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.modal-css-toggle:hover { background: var(--md-sys-color-surface-container-highest); }
+.modal-css-toggle-text { display: flex; flex-direction: column; gap: 2px; }
+.modal-css-toggle-label { font-size: 13px; color: var(--md-sys-color-on-surface); }
+.modal-css-toggle-label code { font-family: var(--md-ref-typeface-mono); font-size: 11px; background: var(--md-sys-color-surface-container-highest); padding: 1px 4px; border-radius: 3px; }
+.modal-css-toggle-desc { font-size: 11px; color: var(--md-sys-color-on-surface-variant); }
+
+.modal-file-row.css-file { background: #1a2e2e; }
+.modal-file-row.css-file:hover { background: #1e3535; }
+.modal-file-row.css-file .material-icons-round { color: #80CBC4; }
+.modal-file-row.css-file .fname { color: #80CBC4; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spin { animation: spin 1s linear infinite; display: inline-block; }
 </style>
 </head>
 <body>
@@ -568,6 +708,9 @@ textarea.code-out {
 <div class="app-shell">
   <div class="top-bar">
     <h1>Userscript Builder</h1>
+    <button class="m3-btn m3-btn-folder" id="importFolder">
+      <span class="material-icons-round">folder_zip</span> Import Folder
+    </button>
     <button class="m3-btn m3-btn-outlined" id="addRemote">
       <span class="material-icons-round">add_link</span> Remote URL
     </button>
@@ -579,7 +722,6 @@ textarea.code-out {
   <div class="content">
     <div class="left-col">
 
-      <!-- JS Files -->
       <div class="m3-card">
         <div class="m3-card-header">
           <span class="material-icons-round">javascript</span>
@@ -599,7 +741,6 @@ textarea.code-out {
         </div>
       </div>
 
-      <!-- CSS Themes -->
       <div class="m3-card">
         <div class="m3-card-header">
           <span class="material-icons-round">palette</span>
@@ -619,7 +760,6 @@ textarea.code-out {
         </div>
       </div>
 
-      <!-- Metadata -->
       <div class="m3-card">
         <div class="m3-card-header">
           <span class="material-icons-round">info</span>
@@ -646,10 +786,13 @@ textarea.code-out {
               <option value="document-idle">document-idle</option>
             </select>
           </div>
+          <div class="m3-field" style="grid-column:1/-1">
+            <label>Description</label>
+            <input id="scriptDesc" type="text" placeholder="Combined userscript generated locally" autocomplete="off" spellcheck="false">
+          </div>
         </div>
       </div>
 
-      <!-- Build options -->
       <div class="m3-card">
         <div class="m3-card-header">
           <span class="material-icons-round">tune</span>
@@ -680,17 +823,6 @@ textarea.code-out {
           <div class="divider"></div>
           <label class="opt-row">
             <div class="opt-row-text">
-              <span class="opt-row-label">Strip comments</span>
-              <span class="opt-row-desc">Remove // and /* */ comments from output</span>
-            </div>
-            <div class="m3-checkbox">
-              <input id="minify" type="checkbox">
-              <div class="m3-checkbox-box"></div>
-            </div>
-          </label>
-          <div class="divider"></div>
-          <label class="opt-row">
-            <div class="opt-row-text">
               <span class="opt-row-label">Keep "use strict"</span>
               <span class="opt-row-desc">Preserve strict mode declarations in output</span>
             </div>
@@ -712,7 +844,6 @@ textarea.code-out {
         </div>
       </div>
 
-      <!-- Output -->
       <div class="m3-card">
         <div class="m3-card-header" style="padding-bottom:12px">
           <span class="material-icons-round">terminal</span>
@@ -723,9 +854,6 @@ textarea.code-out {
           <div class="code-surface">
             <div class="code-surface-bar">
               <span>generated .user.js</span>
-              <button class="m3-btn m3-btn-text" id="downloadSource" style="height:32px;font-size:12px">
-                <span class="material-icons-round" style="font-size:16px">download</span> Save
-              </button>
             </div>
             <textarea class="code-out" id="preview" placeholder="// Output will appear here after Preview or Build..." readonly></textarea>
           </div>
@@ -736,7 +864,6 @@ textarea.code-out {
 
     <div class="right-col">
 
-      <!-- Stats -->
       <div class="stat-row">
         <div class="stat-card">
           <div class="stat-val" id="stat-js">0</div>
@@ -752,7 +879,6 @@ textarea.code-out {
         </div>
       </div>
 
-      <!-- File order -->
       <div class="m3-card">
         <div class="m3-card-header">
           <span class="material-icons-round">sort</span>
@@ -765,7 +891,6 @@ textarea.code-out {
         </div>
       </div>
 
-      <!-- Themes detail -->
       <div class="m3-card">
         <div class="m3-card-header">
           <span class="material-icons-round">layers</span>
@@ -782,28 +907,76 @@ textarea.code-out {
   </div>
 </div>
 
+<div class="modal-backdrop" id="folderModal">
+  <div class="modal">
+    <div class="modal-title">
+      <span class="material-icons-round">folder_zip</span>
+      Import from Git Folder
+    </div>
+    <p class="modal-desc">
+      Paste a <strong>GitHub</strong> or <strong>Codeberg</strong> folder URL. Both <code>/tree/</code> and <code>/src/branch/</code> formats are supported. Subdirectories are skipped.
+    </p>
+    <label class="modal-css-toggle" id="cssToggleRow">
+      <div class="m3-checkbox">
+        <input type="checkbox" id="includeCss">
+        <div class="m3-checkbox-box"></div>
+      </div>
+      <div class="modal-css-toggle-text">
+        <span class="modal-css-toggle-label">Also import <code>.css</code> files as themes</span>
+        <span class="modal-css-toggle-desc">CSS files will go into the Themes section</span>
+      </div>
+    </label>
+    <div class="modal-url-field">
+      <input id="folderUrl" type="url" placeholder="https://github.com/user/repo/tree/main/userscripts" spellcheck="false" autocomplete="off"/>
+    </div>
+    <div class="modal-status" id="folderStatus"></div>
+    <div class="modal-filelist" id="folderFilelist" style="display:none"></div>
+    <div class="modal-actions">
+      <button class="m3-btn m3-btn-text" id="folderCancel">Cancel</button>
+      <button class="m3-btn m3-btn-outlined" id="folderFetch">
+        <span class="material-icons-round">search</span> Fetch
+      </button>
+      <button class="m3-btn m3-btn-filled" id="folderImport" disabled>
+        <span class="material-icons-round">download</span> Import selected
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 (() => {
+
   const jsFiles = []
-  const themes = []
+  const themes  = []
+
   const filelistEl = document.getElementById('filelist')
-  const filesArea = document.getElementById('filesArea')
+  const filesArea  = document.getElementById('filesArea')
   const themesList = document.getElementById('themesList')
   const themesArea = document.getElementById('themesArea')
-  const previewEl = document.getElementById('preview')
+  const previewEl  = document.getElementById('preview')
 
-  const metaIds = ['scriptName','version','matchPattern','runAt']
+  const metaIds = ['scriptName','version','matchPattern','runAt','scriptDesc']
+
   metaIds.forEach(id => {
     const el = document.getElementById(id)
     if(!el) return
+    const saved = localStorage.getItem('usbMeta_'+id)
+    if(saved !== null){
+      if(el.tagName === 'SELECT') el.value = saved
+      else el.value = saved
+    }
     el.addEventListener('paste', e => e.stopPropagation())
     el.addEventListener('keydown', e => e.stopPropagation())
     el.addEventListener('focus', () => { document._pasteBlocked = true })
-    el.addEventListener('blur', () => { document._pasteBlocked = false })
+    el.addEventListener('blur',  () => { document._pasteBlocked = false })
+
+    el.addEventListener('input',  () => localStorage.setItem('usbMeta_'+id, el.value))
+    el.addEventListener('change', () => localStorage.setItem('usbMeta_'+id, el.value))
   })
 
   function makeId(name){
-    return name.toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'') || ('FILE_'+Math.random().toString(36).slice(2,8).toUpperCase())
+    return name.toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_+|_+$/g,'')
+      || ('FILE_'+Math.random().toString(36).slice(2,8).toUpperCase())
   }
 
   function readFile(f){
@@ -821,291 +994,448 @@ textarea.code-out {
   }
 
   function updateStats(){
-    document.getElementById('stat-js').textContent = jsFiles.length
+    document.getElementById('stat-js').textContent  = jsFiles.length
     document.getElementById('stat-css').textContent = themes.length
-    const total = jsFiles.reduce((a,f)=>a+(f.text||'').length,0) + themes.reduce((a,t)=>a+(t.css||'').length,0)
-    document.getElementById('stat-kb').textContent = (total/1024).toFixed(1)
-    document.getElementById('js-count').textContent = jsFiles.length + ' file' + (jsFiles.length!==1?'s':'')
-    document.getElementById('css-count').textContent = themes.length + ' theme' + (themes.length!==1?'s':'')
+    const total = jsFiles.reduce((a,f)=>a+(f.text||'').length,0)
+                + themes.reduce((a,t)=>a+(t.css||'').length,0)
+    document.getElementById('stat-kb').textContent  = (total/1024).toFixed(1)
+    document.getElementById('js-count').textContent = jsFiles.length+' file'+(jsFiles.length!==1?'s':'')
+    document.getElementById('css-count').textContent= themes.length+' theme'+(themes.length!==1?'s':'')
   }
 
   function refreshLists(){
     filelistEl.innerHTML = ''
-    filesArea.innerHTML = ''
+    filesArea.innerHTML  = ''
     themesList.innerHTML = ''
     themesArea.innerHTML = ''
 
     if(!jsFiles.length) filesArea.innerHTML = '<div class="empty-state">No JS files loaded</div>'
 
     jsFiles.forEach((f,idx) => {
-      const chip = document.createElement('div')
-      chip.className = 'file-chip'
 
-      const icon = document.createElement('div')
-      icon.className = 'file-chip-icon'
-      icon.innerHTML = '<span class="material-icons-round">insert_drive_file</span>'
+      const chip    = document.createElement('div');    chip.className='file-chip'
+      const icon    = document.createElement('div');    icon.className='file-chip-icon'
+      icon.innerHTML= '<span class="material-icons-round">insert_drive_file</span>'
+      const name    = document.createElement('div');    name.className='file-chip-name'; name.textContent=f.name
+      const size    = document.createElement('div');    size.className='file-chip-size'; size.textContent=fmtBytes((f.text||'').length)
+      const actions = document.createElement('div');    actions.className='file-chip-actions'
 
-      const name = document.createElement('div')
-      name.className = 'file-chip-name'
-      name.textContent = f.name
+      const up = document.createElement('button'); up.className='chip-btn'; up.title='Move up'
+      up.innerHTML='<span class="material-icons-round">arrow_upward</span>'
+      up.onclick=()=>{ if(idx>0){jsFiles.splice(idx,1);jsFiles.splice(idx-1,0,f);refreshLists()} }
 
-      const size = document.createElement('div')
-      size.className = 'file-chip-size'
-      size.textContent = fmtBytes((f.text||'').length)
+      const down = document.createElement('button'); down.className='chip-btn'; down.title='Move down'
+      down.innerHTML='<span class="material-icons-round">arrow_downward</span>'
+      down.onclick=()=>{ if(idx<jsFiles.length-1){jsFiles.splice(idx,1);jsFiles.splice(idx+1,0,f);refreshLists()} }
 
-      const actions = document.createElement('div')
-      actions.className = 'file-chip-actions'
+      const del = document.createElement('button'); del.className='chip-btn'; del.title='Remove'
+      del.innerHTML='<span class="material-icons-round">close</span>'
+      del.onclick=()=>{ jsFiles.splice(idx,1);refreshLists() }
 
-      const up = document.createElement('button')
-      up.className = 'chip-btn'
-      up.title = 'Move up'
-      up.innerHTML = '<span class="material-icons-round">arrow_upward</span>'
-      up.onclick = () => { if(idx>0){ jsFiles.splice(idx,1); jsFiles.splice(idx-1,0,f); refreshLists() } }
-
-      const down = document.createElement('button')
-      down.className = 'chip-btn'
-      down.title = 'Move down'
-      down.innerHTML = '<span class="material-icons-round">arrow_downward</span>'
-      down.onclick = () => { if(idx<jsFiles.length-1){ jsFiles.splice(idx,1); jsFiles.splice(idx+1,0,f); refreshLists() } }
-
-      const del = document.createElement('button')
-      del.className = 'chip-btn'
-      del.title = 'Remove'
-      del.innerHTML = '<span class="material-icons-round">close</span>'
-      del.onclick = () => { jsFiles.splice(idx,1); refreshLists() }
-
-      actions.appendChild(up)
-      actions.appendChild(down)
-      actions.appendChild(del)
-      chip.appendChild(icon)
-      chip.appendChild(name)
-      chip.appendChild(size)
-      chip.appendChild(actions)
+      actions.append(up,down,del)
+      chip.append(icon,name,size,actions)
       filelistEl.appendChild(chip)
 
-      const oitem = document.createElement('div')
-      oitem.className = 'order-list-item'
-      oitem.innerHTML = `<div class="num">${idx+1}</div><div class="oname">${f.name}</div>`
+      const oitem=document.createElement('div'); oitem.className='order-list-item'
+      oitem.innerHTML=`<div class="num">${idx+1}</div><div class="oname">${f.name}</div>`
       filesArea.appendChild(oitem)
     })
 
-    if(!themes.length) themesArea.innerHTML = '<div class="empty-state">No CSS themes loaded</div>'
+    if(!themes.length) themesArea.innerHTML='<div class="empty-state">No CSS themes loaded</div>'
 
-    themes.forEach((t,idx) => {
-      const chip = document.createElement('div')
-      chip.className = 'theme-chip'
+    themes.forEach((t,idx)=>{
+      const chip=document.createElement('div'); chip.className='theme-chip'
+      const icon=document.createElement('div'); icon.className='theme-chip-icon'
+      icon.innerHTML='<span class="material-icons-round">brush</span>'
+      const name=document.createElement('div'); name.className='theme-chip-name'; name.textContent=t.name
+      const size=document.createElement('div'); size.className='theme-chip-size'; size.textContent=fmtBytes((t.css||'').length)
 
-      const icon = document.createElement('div')
-      icon.className = 'theme-chip-icon'
-      icon.innerHTML = '<span class="material-icons-round">brush</span>'
+      const togWrap=document.createElement('div'); togWrap.className='theme-toggle'
+      const sw=document.createElement('label'); sw.className='m3-switch'
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!t.enabled
+      cb.onchange=()=>{t.enabled=cb.checked}
+      const track=document.createElement('div'); track.className='m3-switch-track'
+      const thumb=document.createElement('div'); thumb.className='m3-switch-thumb'
+      track.appendChild(thumb); sw.append(cb,track); togWrap.appendChild(sw)
 
-      const name = document.createElement('div')
-      name.className = 'theme-chip-name'
-      name.textContent = t.name
+      const del=document.createElement('button'); del.className='chip-btn'; del.title='Remove'
+      del.innerHTML='<span class="material-icons-round">close</span>'
+      del.onclick=()=>{themes.splice(idx,1);refreshLists()}
 
-      const size = document.createElement('div')
-      size.className = 'theme-chip-size'
-      size.textContent = fmtBytes((t.css||'').length)
-
-      const togWrap = document.createElement('div')
-      togWrap.className = 'theme-toggle'
-
-      const sw = document.createElement('label')
-      sw.className = 'm3-switch'
-      const cb = document.createElement('input')
-      cb.type = 'checkbox'
-      cb.checked = !!t.enabled
-      cb.onchange = () => { t.enabled = cb.checked }
-      const track = document.createElement('div')
-      track.className = 'm3-switch-track'
-      const thumb = document.createElement('div')
-      thumb.className = 'm3-switch-thumb'
-      track.appendChild(thumb)
-      sw.appendChild(cb)
-      sw.appendChild(track)
-      togWrap.appendChild(sw)
-
-      const del = document.createElement('button')
-      del.className = 'chip-btn'
-      del.title = 'Remove'
-      del.innerHTML = '<span class="material-icons-round">close</span>'
-      del.onclick = () => { themes.splice(idx,1); refreshLists() }
-
-      chip.appendChild(icon)
-      chip.appendChild(name)
-      chip.appendChild(size)
-      chip.appendChild(togWrap)
-      chip.appendChild(del)
+      chip.append(icon,name,size,togWrap,del)
       themesList.appendChild(chip)
 
-      const oitem = document.createElement('div')
-      oitem.className = 'order-list-item'
-      oitem.style.background = 'var(--md-sys-color-tertiary-container)'
-      oitem.innerHTML = `<div class="num" style="background:var(--md-sys-color-tertiary)">${idx+1}</div><div class="oname" style="color:var(--md-sys-color-on-tertiary-container)">${t.name}</div>`
+      const oitem=document.createElement('div'); oitem.className='order-list-item'
+      oitem.style.background='var(--md-sys-color-tertiary-container)'
+      oitem.innerHTML=`<div class="num" style="background:var(--md-sys-color-tertiary)">${idx+1}</div><div class="oname" style="color:var(--md-sys-color-on-tertiary-container)">${t.name}</div>`
       themesArea.appendChild(oitem)
     })
 
     updateStats()
   }
 
-  const drop = document.getElementById('drop')
+  const drop        = document.getElementById('drop')
   const jsFileInput = document.getElementById('jsFileInput')
-  window.addEventListener('dragover', e => e.preventDefault())
-  window.addEventListener('drop', e => e.preventDefault())
+
+  window.addEventListener('dragover',e=>e.preventDefault())
+  window.addEventListener('drop',    e=>e.preventDefault())
 
   function handleJsFiles(list){
-    const arr = Array.from(list).filter(f => f.name.toLowerCase().endsWith('.js'))
-    let done = 0
-    if(!arr.length){ refreshLists(); return }
-    arr.forEach(async f => {
-      try { const text = await readFile(f); jsFiles.push({id:makeId(f.name),name:f.name,text,autoWrap:true,addGuard:true}) } catch(e){}
+    const arr=Array.from(list).filter(f=>f.name.toLowerCase().endsWith('.js'))
+    let done=0
+    if(!arr.length){refreshLists();return}
+    arr.forEach(async f=>{
+      try{ const text=await readFile(f); jsFiles.push({id:makeId(f.name),name:f.name,text,autoWrap:true,addGuard:true}) }catch(e){}
       if(++done===arr.length) refreshLists()
     })
   }
 
-  drop.addEventListener('dragenter', e => { e.preventDefault(); drop.classList.add('over') })
-  drop.addEventListener('dragleave', e => { e.preventDefault(); drop.classList.remove('over') })
-  drop.addEventListener('dragover', e => e.preventDefault())
-  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); if(e.dataTransfer.files.length) handleJsFiles(e.dataTransfer.files) })
-  document.getElementById('chooseJs').addEventListener('click', e => { e.stopPropagation(); jsFileInput.click() })
-  jsFileInput.addEventListener('change', e => { handleJsFiles(e.target.files); jsFileInput.value = '' })
+  drop.addEventListener('dragenter',e=>{e.preventDefault();drop.classList.add('over')})
+  drop.addEventListener('dragleave',e=>{e.preventDefault();drop.classList.remove('over')})
+  drop.addEventListener('dragover', e=>e.preventDefault())
+  drop.addEventListener('drop',     e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files.length)handleJsFiles(e.dataTransfer.files)})
+  document.getElementById('chooseJs').addEventListener('click',e=>{e.stopPropagation();jsFileInput.click()})
+  jsFileInput.addEventListener('change',e=>{handleJsFiles(e.target.files);jsFileInput.value=''})
 
-  const cssDrop = document.getElementById('cssDrop')
-  const cssFileInput = document.getElementById('cssFileInput')
+  const cssDrop    = document.getElementById('cssDrop')
+  const cssFileInput=document.getElementById('cssFileInput')
 
   function handleCssFiles(list){
-    const arr = Array.from(list).filter(f => f.name.toLowerCase().endsWith('.css'))
-    let done = 0
-    if(!arr.length){ refreshLists(); return }
-    arr.forEach(async f => {
-      try { const text = await readFile(f); themes.push({id:makeId(f.name),name:f.name,css:text,enabled:true}) } catch(e){}
+    const arr=Array.from(list).filter(f=>f.name.toLowerCase().endsWith('.css'))
+    let done=0
+    if(!arr.length){refreshLists();return}
+    arr.forEach(async f=>{
+      try{const text=await readFile(f);themes.push({id:makeId(f.name),name:f.name,css:text,enabled:true})}catch(e){}
       if(++done===arr.length) refreshLists()
     })
   }
 
-  cssDrop.addEventListener('dragenter', e => { e.preventDefault(); cssDrop.classList.add('over') })
-  cssDrop.addEventListener('dragleave', e => { e.preventDefault(); cssDrop.classList.remove('over') })
-  cssDrop.addEventListener('dragover', e => e.preventDefault())
-  cssDrop.addEventListener('drop', e => { e.preventDefault(); cssDrop.classList.remove('over'); if(e.dataTransfer.files.length) handleCssFiles(e.dataTransfer.files) })
-  document.getElementById('chooseCss').addEventListener('click', e => { e.stopPropagation(); cssFileInput.click() })
-  cssFileInput.addEventListener('change', e => { handleCssFiles(e.target.files); cssFileInput.value = '' })
+  cssDrop.addEventListener('dragenter',e=>{e.preventDefault();cssDrop.classList.add('over')})
+  cssDrop.addEventListener('dragleave',e=>{e.preventDefault();cssDrop.classList.remove('over')})
+  cssDrop.addEventListener('dragover', e=>e.preventDefault())
+  cssDrop.addEventListener('drop',     e=>{e.preventDefault();cssDrop.classList.remove('over');if(e.dataTransfer.files.length)handleCssFiles(e.dataTransfer.files)})
+  document.getElementById('chooseCss').addEventListener('click',e=>{e.stopPropagation();cssFileInput.click()})
+  cssFileInput.addEventListener('change',e=>{handleCssFiles(e.target.files);cssFileInput.value=''})
 
-  document.getElementById('addRemote').onclick = async () => {
-    const url = prompt('Remote JS URL:')
+  document.getElementById('addRemote').onclick = async ()=>{
+    const url=prompt('Remote JS URL:')
     if(!url) return
-    try {
-      const res = await fetch(url)
-      if(!res.ok) throw new Error('fetch failed')
-      const txt = await res.text()
-      const name = url.split('/').pop().split('?')[0] || url
+    try{
+      const res=await fetch(url)
+      if(!res.ok) throw new Error('HTTP '+res.status)
+      const txt=await res.text()
+      const name=url.split('/').pop().split('?')[0]||url
       jsFiles.push({id:makeId(name),name,text:txt,autoWrap:true,addGuard:true})
       refreshLists()
-    } catch(err){ alert('Failed: '+err) }
+    }catch(err){alert('Failed: '+err)}
   }
 
-  document.getElementById('clear').onclick = () => {
+  document.getElementById('clear').onclick=()=>{
     if(!confirm('Clear everything?')) return
-    jsFiles.length = 0; themes.length = 0; refreshLists()
-    previewEl.value = ''
-    document.getElementById('preview-lines').textContent = '—'
+    jsFiles.length=0;themes.length=0;refreshLists()
+    previewEl.value=''
+    document.getElementById('preview-lines').textContent='—'
   }
 
-  function simpleMinify(s, preserveStrict){
-    try {
-      s = s.replace(/\/\*[\s\S]*?\*\//g, '')
-      s = s.replace(/^[ \t]*\/\/.*$/gm, '')
-      s = s.replace(/([^:])\/\/(?!['"`]).*$/gm, '$1')
-      if(!preserveStrict) s = s.replace(/['"]use strict['"];?/g, '')
-      s = s.replace(/\n{3,}/g, '\n\n')
-      s = s.split('\n').map(l => l.replace(/\s+$/,'')).join('\n')
+  function simpleMinify(s,preserveStrict){
+    try{
+      s=s.replace(/\/\*[\s\S]*?\*\//g,'')
+      s=s.replace(/^[ \t]*\/\/.*$/gm,'')
+      s=s.replace(/([^:])\/\/(?!['"`]).*$/gm,'$1')
+      if(!preserveStrict) s=s.replace(/['"]use strict['"];?/g,'')
+      s=s.replace(/\n{3,}/g,'\n\n')
+      s=s.split('\n').map(l=>l.replace(/\s+$/,'')).join('\n')
       return s.trim()
-    } catch(e){ return s }
+    }catch(e){return s}
   }
 
-  function hasIIFE(text){ return /\(\s*function[\s\S]*?\)\s*\(|\(\s*async\s+function[\s\S]*?\)\s*\(|^\(function\s*\(/.test(text) }
-  function hasGuard(text){ return /window\.__US_BUILDER_[A-Z0-9_]+__/.test(text) }
+  function hasIIFE(text){return/\(\s*function[\s\S]*?\)\s*\(|\(\s*async\s+function[\s\S]*?\)\s*\(|^\(function\s*\(/.test(text)}
+  function hasGuard(text){return/window\.__US_BUILDER_[A-Z0-9_]+__/.test(text)}
 
-  function wrapFile(f, opts){
-    let t = f.text || ''
-    if(opts.minify) t = simpleMinify(t, opts.preserveStrict)
-    const hasStrict = /^(['"])use strict\1;?/.test(t.trim())
-    let prefix = '', suffix = ''
-    if(f.addGuard && opts.addGuards && !hasGuard(t)) prefix += `if(window.__US_BUILDER_${f.id}__){return;}window.__US_BUILDER_${f.id}__=true;\n`
-    if(opts.autoWrapAll && f.autoWrap && !hasIIFE(t)){ prefix += '(function(){\n'; suffix = '\n})();' }
-    if(opts.preserveStrict && hasStrict){ t = t.replace(/^(['"])use strict\1;?\s*/,''); prefix += `'use strict';\n` }
-    return prefix + '\n' + t + '\n' + suffix
+  function wrapFile(f,opts){
+    let t=f.text||''
+    if(opts.minify) t=simpleMinify(t,opts.preserveStrict)
+    const hasStrict=/^(['"])use strict\1;?/.test(t.trim())
+    let prefix='',suffix=''
+    if(f.addGuard&&opts.addGuards&&!hasGuard(t)) prefix+=`if(window.__US_BUILDER_${f.id}__){return;}window.__US_BUILDER_${f.id}__=true;\n`
+    if(opts.autoWrapAll&&f.autoWrap&&!hasIIFE(t)){prefix+='(function(){\n';suffix='\n})();'}
+    if(opts.preserveStrict&&hasStrict){t=t.replace(/^(['"])use strict\1;?\s*/,'');prefix+=`'use strict';\n`}
+    return prefix+'\n'+t+'\n'+suffix
   }
 
   function buildScript(){
-    const headerName = document.getElementById('scriptName').value || 'Combined Userscript'
-    const match = document.getElementById('matchPattern').value || ''
-    const runAt = document.getElementById('runAt').value || 'document-start'
-    const version = document.getElementById('version').value || '1.0'
-    const opts = {
-      autoWrapAll: document.getElementById('autoWrap').checked,
-      addGuards: document.getElementById('addGuards').checked,
-      minify: document.getElementById('minify').checked,
-      preserveStrict: document.getElementById('preserveStrict').checked
+    const headerName=document.getElementById('scriptName').value||'Combined Userscript'
+    const match=document.getElementById('matchPattern').value||''
+    const runAt=document.getElementById('runAt').value||'document-start'
+    const version=document.getElementById('version').value||'1.0'
+    const desc=document.getElementById('scriptDesc').value||'Combined userscript generated locally'
+    const opts={
+      autoWrapAll:document.getElementById('autoWrap').checked,
+      addGuards:document.getElementById('addGuards').checked,
+      minify:false,
+      preserveStrict:document.getElementById('preserveStrict').checked
     }
-    let header = `// ==UserScript==\n// @name        ${headerName}\n// @namespace   userscript.builder\n// @version     ${version}\n// @description Combined userscript generated locally\n`
-    if(match) header += `// @match       ${match}\n`
-    header += `// @grant       none\n// @run-at      ${runAt}\n// ==/UserScript==\n\n`
-    let body = opts.minify ? `(function(){\n` : `(function(){\n'@preserve - Built on ${new Date().toISOString()}';\n`
-    jsFiles.forEach(f => {
-      if(!opts.minify) body += `\n/* --- ${f.name} --- */\n`
-      body += wrapFile(f, opts) + '\n'
+    let header=`// ==UserScript==\n// @name        ${headerName}\n// @namespace   userscript.builder\n// @version     ${version}\n// @description ${desc}\n`
+    if(match) header+=`// @match       ${match}\n`
+    header+=`// @grant       none\n// @run-at      ${runAt}\n// ==/UserScript==\n\n`
+    let body=opts.minify?`(function(){\n`:`(function(){\n'@preserve - Built on ${new Date().toISOString()}';\n`
+    jsFiles.forEach(f=>{
+      if(!opts.minify) body+=`\n/* --- ${f.name} --- */\n`
+      body+=wrapFile(f,opts)+'\n'
     })
     if(themes.length){
-      if(!opts.minify) body += `\n/* --- Embedded Themes --- */\n`
-      body += `const __BUILDER_THEMES__ = [\n`
-      themes.forEach(t => { body += `  {id:${JSON.stringify(t.id)},name:${JSON.stringify(t.name)},css:${JSON.stringify(t.css)},enabled:${!!t.enabled}},\n` })
-      body += `];\n;(function(){\n  try{\n    __BUILDER_THEMES__.forEach(t=>{\n      const s=document.createElement('style');s.id='us-theme-'+t.id;s.textContent=t.css;\n      if(t.enabled)document.head.appendChild(s);\n    });\n  }catch(e){}\n})();\n`
+      if(!opts.minify) body+=`\n/* --- Embedded Themes --- */\n`
+      body+=`const __BUILDER_THEMES__ = [\n`
+      themes.forEach(t=>{body+=`  {id:${JSON.stringify(t.id)},name:${JSON.stringify(t.name)},css:${JSON.stringify(t.css)},enabled:${!!t.enabled}},\n`})
+      body+=`];\n;(function(){\n  try{\n    __BUILDER_THEMES__.forEach(t=>{\n      const s=document.createElement('style');s.id='us-theme-'+t.id;s.textContent=t.css;\n      if(t.enabled)document.head.appendChild(s);\n    });\n  }catch(e){}\n})();\n`
     }
-    body += `\n})();\n`
-    return header + body
+    body+=`\n})();\n`
+    return header+body
   }
 
-  document.getElementById('previewBtn').onclick = () => {
-    const out = buildScript()
-    previewEl.value = out
-    previewEl.scrollTop = 0
-    document.getElementById('preview-lines').textContent = out.split('\n').length + ' lines'
+  document.getElementById('previewBtn').onclick=()=>{
+    const out=buildScript()
+    previewEl.value=out; previewEl.scrollTop=0
+    document.getElementById('preview-lines').textContent=out.split('\n').length+' lines'
   }
 
-  document.getElementById('build').onclick = () => {
-    if(!jsFiles.length && !themes.length){ alert('Add at least one file.'); return }
-    const out = buildScript()
-    previewEl.value = out
-    previewEl.scrollTop = 0
-    document.getElementById('preview-lines').textContent = out.split('\n').length + ' lines'
-    const blob = new Blob([out], {type:'application/javascript;charset=utf-8'})
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = (document.getElementById('scriptName').value || 'combined').replace(/\s+/g,'-') + '.user.js'
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(url), 5000)
+  document.getElementById('build').onclick=()=>{
+    if(!jsFiles.length&&!themes.length){alert('Add at least one file.');return}
+    const out=buildScript()
+    previewEl.value=out; previewEl.scrollTop=0
+    document.getElementById('preview-lines').textContent=out.split('\n').length+' lines'
+    const blob=new Blob([out],{type:'application/javascript;charset=utf-8'})
+    const url=URL.createObjectURL(blob)
+    const a=document.createElement('a'); a.href=url
+    a.download=(document.getElementById('scriptName').value||'combined').replace(/\s+/g,'-')+'.user.js'
+    a.click(); setTimeout(()=>URL.revokeObjectURL(url),5000)
   }
 
-  document.getElementById('downloadSource').onclick = () => {
-    const txt = previewEl.value || buildScript()
-    const blob = new Blob([txt], {type:'application/javascript;charset=utf-8'})
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url; a.download = 'userscript-preview.js'; a.click()
-    setTimeout(() => URL.revokeObjectURL(url), 5000)
-  }
-
-  document.addEventListener('paste', e => {
+  document.addEventListener('paste',e=>{
     if(document._pasteBlocked) return
-    const active = document.activeElement
-    if(active && (active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.tagName==='SELECT')) return
-    const text = (e.clipboardData||window.clipboardData).getData('Text')
-    if(text && text.trim()){
-      const name = 'pasted-'+Date.now()+'.js'
+    const active=document.activeElement
+    if(active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.tagName==='SELECT')) return
+    const text=(e.clipboardData||window.clipboardData).getData('Text')
+    if(text&&text.trim()){
+      const name='pasted-'+Date.now()+'.js'
       jsFiles.push({id:makeId(name),name,text,autoWrap:true,addGuard:true})
       refreshLists()
     }
+  })
+
+  const modal        = document.getElementById('folderModal')
+  const folderUrlEl  = document.getElementById('folderUrl')
+  const folderStatus = document.getElementById('folderStatus')
+  const folderList   = document.getElementById('folderFilelist')
+  const importBtn    = document.getElementById('folderImport')
+  const fetchBtn     = document.getElementById('folderFetch')
+
+  const cssToggleCb = document.getElementById('includeCss')
+  cssToggleCb.checked = localStorage.getItem('importFolderIncludeCss') === 'true'
+  cssToggleCb.addEventListener('change', ()=>{
+    localStorage.setItem('importFolderIncludeCss', cssToggleCb.checked)
+  })
+
+  document.getElementById('importFolder').onclick = ()=>{
+    modal.classList.add('open')
+    folderUrlEl.focus()
+    resetModal()
+  }
+  document.getElementById('folderCancel').onclick = ()=>modal.classList.remove('open')
+  modal.addEventListener('click', e=>{ if(e.target===modal) modal.classList.remove('open') })
+
+  function resetModal(){
+    folderStatus.textContent=''
+    folderStatus.className='modal-status'
+    folderList.innerHTML=''
+    folderList.style.display='none'
+    importBtn.disabled=true
+  }
+
+  function setStatus(msg, type=''){
+    folderStatus.textContent=msg
+    folderStatus.className='modal-status'+(type?' '+type:'')
+  }
+
+
+  function parseRepoUrl(raw){
+    try{
+      const u = new URL(raw.trim())
+      const host = u.hostname.replace(/^www\./,'')
+      const parts = u.pathname.replace(/^\/|\/$/g,'').split('/')
+
+      if(host==='github.com'){
+
+        if(parts.length<4 || parts[2]!=='tree') return null
+        const [owner,repo,,branch,...pathParts] = parts
+        return { platform:'github', owner, repo, branch, path:pathParts.join('/') }
+      }
+
+      if(host==='codeberg.org'){
+
+        if(parts.length<5 || parts[2]!=='src' || parts[3]!=='branch') return null
+        const [owner,repo,,,branch,...pathParts] = parts
+        return { platform:'codeberg', owner, repo, branch, path:pathParts.join('/') }
+      }
+    }catch(e){}
+    return null
+  }
+
+  async function fetchFileList(info){
+    let apiUrl
+    if(info.platform==='github'){
+      apiUrl=`https://api.github.com/repos/${info.owner}/${info.repo}/contents/${info.path}?ref=${info.branch}`
+    } else {
+      apiUrl=`https://codeberg.org/api/v1/repos/${info.owner}/${info.repo}/contents/${info.path}?ref=${info.branch}&limit=50`
+    }
+
+    const headers = { 'Accept': info.platform==='github' ? 'application/vnd.github.v3+json' : 'application/json' }
+    const res = await fetch(apiUrl, { headers })
+    if(!res.ok){
+      const body = await res.text().catch(()=>'')
+      if(res.status===403||res.status===429) throw new Error('Rate-limited by '+info.platform+' API. Try again in a moment.')
+      if(res.status===404) throw new Error('Folder not found — check the URL and branch name.')
+      throw new Error('API error '+res.status+': '+body.slice(0,120))
+    }
+    const data = await res.json()
+    if(!Array.isArray(data)) throw new Error('Unexpected API response (not an array)')
+
+    const wantCss = document.getElementById('includeCss').checked
+    return data.filter(f => {
+                 if(f.type!=='file') return false
+                 const n=f.name.toLowerCase()
+                 return n.endsWith('.js') || (wantCss && n.endsWith('.css'))
+               })
+               .map(f => ({
+                 name: f.name,
+                 size: f.size,
+                 fileType: f.name.toLowerCase().endsWith('.css') ? 'css' : 'js',
+                 downloadUrl: info.platform==='github' ? f.download_url : buildCodebergRaw(info,f.name),
+                 isCodebergApi: info.platform==='codeberg'
+               }))
+  }
+
+  function buildCodebergRaw(info,filename){
+
+    const p = info.path ? info.path+'/'+filename : filename
+    return `https://codeberg.org/api/v1/repos/${info.owner}/${info.repo}/contents/${p}?ref=${info.branch}`
+  }
+
+  let discoveredFiles = []
+
+  fetchBtn.onclick = async ()=>{
+    const raw = folderUrlEl.value.trim()
+    if(!raw){ setStatus('Paste a folder URL first.','err'); return }
+
+    const info = parseRepoUrl(raw)
+    if(!info){ setStatus('URL not recognised. Use a GitHub /tree/ or Codeberg /src/branch/ folder link.','err'); return }
+
+    fetchBtn.disabled=true
+    setStatus('Fetching file list…')
+    folderList.innerHTML=''
+    folderList.style.display='none'
+    importBtn.disabled=true
+    discoveredFiles=[]
+
+    try{
+      const files = await fetchFileList(info)
+      discoveredFiles = files
+
+      if(!files.length){
+        setStatus('No .js files found in that folder.','err')
+        fetchBtn.disabled=false
+        return
+      }
+
+      const jsCount  = files.filter(f=>f.fileType==='js').length
+      const cssCount = files.filter(f=>f.fileType==='css').length
+      const parts = []
+      if(jsCount)  parts.push(`${jsCount} .js`)
+      if(cssCount) parts.push(`${cssCount} .css`)
+      setStatus(`Found ${parts.join(' + ')} file${files.length!==1?'s':''} — pick which to import:`, 'ok')
+      folderList.style.display='flex'
+      folderList.innerHTML=''
+
+      files.forEach((f,i)=>{
+        const isCss = f.fileType==='css'
+        const row=document.createElement('div')
+        row.className='modal-file-row'+(isCss?' css-file':'')
+        row.innerHTML=`
+          <div class="m3-checkbox mfr-cb">
+            <input type="checkbox" id="mfr_${i}" checked>
+            <div class="m3-checkbox-box"></div>
+          </div>
+          <span class="material-icons-round">${isCss?'brush':'javascript'}</span>
+          <span class="fname">${f.name}</span>
+          <span class="fsize">${fmtBytes(f.size)}</span>
+        `
+        row.addEventListener('click', e=>{
+          if(e.target.tagName==='INPUT') return
+          const cb=row.querySelector('input[type=checkbox]')
+          cb.checked=!cb.checked
+          folderList.dispatchEvent(new Event('change'))
+        })
+        folderList.appendChild(row)
+      })
+
+      importBtn.disabled=false
+    }catch(err){
+      setStatus('Error: '+err.message,'err')
+    }
+    fetchBtn.disabled=false
+  }
+  folderUrlEl.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); fetchBtn.click() } })
+
+  importBtn.onclick = async ()=>{
+    const checkboxes = [...folderList.querySelectorAll('input[type=checkbox]')]
+    const selected   = checkboxes.map((cb,i)=>cb.checked ? discoveredFiles[i] : null).filter(Boolean)
+
+    if(!selected.length){ setStatus('Select at least one file.','err'); return }
+
+    importBtn.disabled=true
+    fetchBtn.disabled=true
+    setStatus(`Downloading ${selected.length} file${selected.length!==1?'s':''}…`)
+
+    let done=0, failed=0
+    await Promise.all(selected.map(async f=>{
+      try{
+        const res=await fetch(f.downloadUrl)
+        if(!res.ok) throw new Error('HTTP '+res.status)
+        let text
+        if(f.isCodebergApi){
+
+          const json=await res.json()
+          const b64=(json.content||'').replace(/\s/g,'')
+          text=decodeURIComponent(escape(atob(b64)))
+        } else {
+          text=await res.text()
+        }
+
+        if(f.fileType==='css'){
+          if(!themes.find(x=>x.name===f.name)){
+            themes.push({id:makeId(f.name),name:f.name,css:text,enabled:true})
+          }
+        } else {
+          if(!jsFiles.find(x=>x.name===f.name)){
+            jsFiles.push({id:makeId(f.name),name:f.name,text,autoWrap:true,addGuard:true})
+          }
+        }
+        done++
+      }catch(e){ failed++; console.warn('Failed to fetch',f.name,e) }
+    }))
+
+    refreshLists()
+    const msg=`Imported ${done} file${done!==1?'s':''}${failed?` (${failed} failed)`:''}. ✓`
+    setStatus(msg,'ok')
+    importBtn.disabled=false
+    fetchBtn.disabled=false
+
+    if(!failed) setTimeout(()=>modal.classList.remove('open'),1200)
+  }
+
+  folderList.addEventListener('change', ()=>{
+    const any=[...folderList.querySelectorAll('input[type=checkbox]')].some(c=>c.checked)
+    importBtn.disabled=!any
   })
 
   refreshLists()
