@@ -51,7 +51,6 @@
     min-height: 100vh;
   }
 
-  /* Top App Bar */
   .top-bar {
     background: var(--md-sys-color-surface-container);
     display: flex;
@@ -82,7 +81,6 @@
     letter-spacing: 0.2px;
   }
 
-  /* Layout */
   .layout {
     max-width: 960px;
     margin: 0 auto;
@@ -92,7 +90,6 @@
     gap: 20px;
   }
 
-  /* Card */
   .card {
     background: var(--md-sys-color-surface-container-low);
     border-radius: 16px;
@@ -112,7 +109,6 @@
   }
   .card-title .material-icons-round { font-size: 18px; }
 
-  /* URL Loader */
   .url-row {
     display: flex;
     gap: 12px;
@@ -174,7 +170,6 @@
   }
   .chip .material-icons-round { font-size: 16px; }
 
-  /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -214,7 +209,6 @@
   .btn-error:hover { filter: brightness(1.2); }
   .btn:disabled { opacity: 0.38; cursor: not-allowed; }
 
-  /* Search + toolbar */
   .toolbar {
     display: flex;
     gap: 12px;
@@ -259,7 +253,6 @@
     white-space: nowrap;
   }
 
-  /* Plugin list */
   #pluginList {
     display: flex;
     flex-direction: column;
@@ -365,7 +358,6 @@
   .inline-field:focus { border-color: var(--md-sys-color-primary); }
   .inline-field.mono { font-family: 'Roboto Mono', monospace; font-size: 13px; }
 
-  /* Snackbar */
   #snackbar {
     position: fixed;
     bottom: 24px;
@@ -387,7 +379,6 @@
   #snackbar.show { transform: translateX(-50%) translateY(0); }
   #snackbar .material-icons-round { font-size: 20px; color: var(--md-sys-color-primary); }
 
-  /* Empty state */
   .empty-state {
     text-align: center;
     padding: 48px 24px;
@@ -397,7 +388,6 @@
   .empty-state .material-icons-round { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
   .empty-state p { font-size: 15px; }
 
-  /* Loading */
   .spinner {
     width: 20px; height: 20px;
     border: 2px solid rgba(208,188,255,0.3);
@@ -411,7 +401,7 @@
   .divider { height: 1px; background: var(--md-sys-color-outline-variant); }
 
   .highlight { background: rgba(208,188,255,0.2); border-radius: 3px; }
-  /* Icon field */
+
   .icon-field-row {
     display: flex;
     gap: 8px;
@@ -459,7 +449,6 @@
   }
   .icon-clear-btn .material-icons-round { font-size: 14px; }
 
-  /* Icon Reference */
   .icon-ref-grid {
     display: flex;
     flex-wrap: wrap;
@@ -542,7 +531,6 @@
   }
   .copied-hint .material-icons-round { font-size: 14px; }
 
-  /* Paste area */
   .paste-area {
     width: 100%;
     background: var(--md-sys-color-surface-container-highest);
@@ -561,7 +549,6 @@
   .paste-area:focus { border-color: var(--md-sys-color-primary); }
   .paste-area::placeholder { color: var(--md-sys-color-on-surface-variant); font-family: 'Google Sans', sans-serif; font-size: 13px; }
 
-  /* Method tabs */
   .method-tabs {
     display: flex;
     gap: 6px;
@@ -592,12 +579,10 @@
   }
   .method-panel { display: none; }
   .method-panel.active { display: block; }
-
 </style>
 </head>
 <body>
 
-<!-- Top Bar -->
 <div class="top-bar">
   <span class="material-icons-round">extension</span>
   <h1>Plugin Backend Editor</h1>
@@ -606,14 +591,12 @@
 
 <div class="layout">
 
-  <!-- Load Backend -->
   <div class="card">
     <div class="card-title">
       <span class="material-icons-round">cloud_download</span>
       Load Backend
     </div>
 
-    <!-- Method tabs -->
     <div class="method-tabs">
       <button class="method-tab active" id="tab-url" onclick="switchMethod('url')">
         <span class="material-icons-round">link</span>
@@ -625,14 +608,13 @@
       </button>
     </div>
 
-    <!-- URL panel -->
     <div class="method-panel active" id="panel-url">
       <div class="url-row">
         <div class="url-input-wrap">
           <span class="material-icons-round">link</span>
           <input class="field" id="urlInput" type="text"
-            placeholder="Paste GitHub / Codeberg raw URL..."
-            value="raw.githubusercontent.com/AvaLilac/PluginRepo/refs/heads/main/pluginrepobackend.js">
+            placeholder="Paste GitHub or Codeberg file URL..."
+            value="https://github.com/AvaLilac/PluginRepo/blob/main/pluginrepobackend.js">
         </div>
         <div class="spinner" id="spinner"></div>
         <button class="btn btn-filled" onclick="loadFromURL()">
@@ -646,15 +628,14 @@
           AvaLilac GitHub (default)
         </div>
         <span style="font-size:12px; color:var(--md-sys-color-on-surface-variant); align-self:center; margin-left:4px;">
-          GitHub &amp; Codeberg raw URLs both work
+          GitHub &amp; Codeberg URLs both work (blob, raw, or API)
         </span>
       </div>
     </div>
 
-    <!-- Paste panel -->
     <div class="method-panel" id="panel-paste">
       <textarea class="paste-area" id="pasteInput" rows="6"
-        placeholder='Paste your backend JSON here, e.g. {"plugins":[...]}'></textarea>
+        placeholder='Paste your backend JSON here, e.g. {"plugins":[]}'></textarea>
       <div style="margin-top:10px; display:flex; gap:10px;">
         <button class="btn btn-filled" onclick="loadFromPaste()">
           <span class="material-icons-round">upload</span>
@@ -668,8 +649,6 @@
     </div>
   </div>
 
-
-  <!-- Icon Reference -->
   <div class="card">
     <div class="card-title" style="cursor:pointer; margin-bottom:0;" onclick="toggleIconRef()">
       <span class="material-icons-round">auto_awesome</span>
@@ -693,7 +672,6 @@
     </div>
   </div>
 
-  <!-- Toolbar + Search -->
   <div style="display:flex; flex-direction:column; gap:12px;">
     <div class="toolbar">
       <div class="search-wrap">
@@ -735,7 +713,6 @@
 
 </div>
 
-<!-- Snackbar -->
 <div id="snackbar">
   <span class="material-icons-round">check_circle</span>
   <span id="snackMsg">Done!</span>
@@ -745,7 +722,6 @@
 let plugins = [];
 let searchQuery = '';
 let snackTimer = null;
-
 
 function switchMethod(method) {
   document.getElementById('tab-url').classList.toggle('active', method === 'url');
@@ -769,54 +745,132 @@ function loadFromPaste() {
 }
 
 const PRESETS = {
-  github: 'raw.githubusercontent.com/AvaLilac/PluginRepo/refs/heads/main/pluginrepobackend.js',
-  codeberg: 'codeberg.org/AvaLilac/Ava-s-AviaClient-Plugins/raw/branch/main/AppleEmoji.js'
+  github: 'https://github.com/AvaLilac/PluginRepo/blob/main/pluginrepobackend.js',
 };
 
 function setPreset(key) {
   document.getElementById('urlInput').value = PRESETS[key];
 }
 
-function normalizeURL(raw) {
-  raw = raw.trim();
+function parseFileUrl(raw) {
+  try {
+    if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+    const u = new URL(raw);
+    const host = u.hostname.replace(/^www\./, '');
+    const parts = u.pathname.replace(/^\/|\/$/g, '').split('/');
 
-  if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+    if (host === 'raw.githubusercontent.com') {
 
-  if (raw.includes('codeberg.org') && raw.includes('/src/branch/')) {
-    raw = raw.replace('/src/branch/', '/raw/branch/');
+      const [owner, repo, branch, ...pathParts] = parts;
+      return { platform: 'github', owner, repo, branch, path: pathParts.join('/') };
+    }
+    if (host === 'github.com') {
+
+      if (parts.length >= 5 && (parts[2] === 'blob' || parts[2] === 'raw')) {
+        const [owner, repo, , branch, ...pathParts] = parts;
+        return { platform: 'github', owner, repo, branch, path: pathParts.join('/') };
+      }
+    }
+    if (host === 'api.github.com' && parts[0] === 'repos') {
+
+      const owner = parts[1], repo = parts[2];
+      const pathParts = parts.slice(4);
+      const branch = u.searchParams.get('ref') || 'main';
+      return { platform: 'github', owner, repo, branch, path: pathParts.join('/') };
+    }
+
+    if (host === 'codeberg.org') {
+
+      if (parts[0] === 'api' && parts[1] === 'v1' && parts[2] === 'repos') {
+        const owner = parts[3], repo = parts[4];
+        const pathParts = parts.slice(6); // skip 'contents'
+        const branch = u.searchParams.get('ref') || 'main';
+        return { platform: 'codeberg', owner, repo, branch, path: pathParts.join('/') };
+      }
+
+      if (parts.length >= 6 && (parts[2] === 'src' || parts[2] === 'raw') && parts[3] === 'branch') {
+        const [owner, repo, , , branch, ...pathParts] = parts;
+        return { platform: 'codeberg', owner, repo, branch, path: pathParts.join('/') };
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+async function fetchFileText(info) {
+  let apiUrl;
+  if (info.platform === 'github') {
+    apiUrl = `https://api.github.com/repos/${info.owner}/${info.repo}/contents/${info.path}?ref=${info.branch}`;
+  } else {
+
+    apiUrl = `https://codeberg.org/api/v1/repos/${info.owner}/${info.repo}/contents/${info.path}?ref=${info.branch}&limit=1`;
   }
 
-  return raw;
+  const headers = {
+    'Accept': info.platform === 'github'
+      ? 'application/vnd.github.v3+json'
+      : 'application/json'
+  };
+
+  const res = await fetch(apiUrl, { headers });
+
+  if (!res.ok) {
+    if (res.status === 403 || res.status === 429)
+      throw new Error(`Rate-limited by ${info.platform} API — try again in a moment`);
+    if (res.status === 404)
+      throw new Error('File not found — check the URL and branch name');
+    throw new Error(`API error ${res.status}`);
+  }
+
+  const json = await res.json();
+
+  if (json.content) {
+    const b64 = json.content.replace(/\s/g, '');
+    return decodeURIComponent(escape(atob(b64)));
+  }
+
+  if (json.download_url) {
+    const r2 = await fetch(json.download_url);
+    if (!r2.ok) throw new Error(`Download failed: HTTP ${r2.status}`);
+    return r2.text();
+  }
+
+  throw new Error('API response contained no file content');
 }
 
 async function loadFromURL() {
-  const raw = document.getElementById('urlInput').value;
-  if (!raw.trim()) { showSnack('Please enter a URL', 'error'); return; }
+  let raw = document.getElementById('urlInput').value.trim();
+  if (!raw) { showSnack('Please enter a URL', 'error'); return; }
 
-  const url = normalizeURL(raw);
   const spinner = document.getElementById('spinner');
   spinner.style.display = 'block';
 
   try {
+    const info = parseFileUrl(raw);
 
-    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-    const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
+    let text;
+    if (info) {
+
+      text = await fetchFileText(info);
+    } else {
+
+      if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+      const res = await fetch(raw);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      text = await res.text();
+    }
 
     let json;
     try {
       json = JSON.parse(text);
     } catch {
-
       const match = text.match(/\{[\s\S]*\}/);
       if (match) json = JSON.parse(match[0]);
-      else throw new Error('Could not parse JSON from response');
+      else throw new Error('Could not parse JSON from the file');
     }
 
-    if (!json.plugins || !Array.isArray(json.plugins)) {
-      throw new Error('No "plugins" array found in response');
-    }
+    if (!json.plugins || !Array.isArray(json.plugins))
+      throw new Error('No "plugins" array found in file');
 
     plugins = json.plugins;
     renderAll();
@@ -839,7 +893,7 @@ function renderAll() {
   const empty = document.getElementById('emptyState');
   list.innerHTML = '';
 
-  const filtered = plugins.filter((p, i) => {
+  const filtered = plugins.filter(p => {
     if (!q) return true;
     return (p.name || '').toLowerCase().includes(q)
         || (p.author || '').toLowerCase().includes(q)
@@ -859,7 +913,6 @@ function renderAll() {
   }
 
   empty.style.display = 'none';
-
   filtered.forEach(plugin => {
     const realIdx = plugins.indexOf(plugin);
     list.appendChild(buildCard(plugin, realIdx));
@@ -882,15 +935,12 @@ function buildCard(plugin, idx) {
   card.className = 'plugin-card';
   card.id = 'card-' + idx;
 
-  const authorDisplay = plugin.author || 'Unknown';
-  const nameDisplay = plugin.name || '(no name)';
-
   card.innerHTML = `
     <div class="plugin-header" onclick="toggleCard(${idx})">
       <div class="plugin-icon"><span class="material-icons-round">${getIconForPlugin(plugin)}</span></div>
       <div class="plugin-meta">
-        <div class="plugin-name">${hl(nameDisplay, q)}</div>
-        <div class="plugin-author">${hl(authorDisplay, q)}</div>
+        <div class="plugin-name">${hl(plugin.name || '(no name)', q)}</div>
+        <div class="plugin-author">${hl(plugin.author || 'Unknown', q)}</div>
       </div>
       <div class="plugin-actions" onclick="event.stopPropagation()">
         <button class="icon-btn" title="Move up" onclick="movePlugin(${idx}, -1)">
@@ -947,9 +997,9 @@ function buildCard(plugin, idx) {
 }
 
 function toggleCard(idx) {
-  const body = document.getElementById('body-' + idx);
+  const body  = document.getElementById('body-' + idx);
   const arrow = document.getElementById('arrow-' + idx);
-  const card = document.getElementById('card-' + idx);
+  const card  = document.getElementById('card-' + idx);
   const isOpen = body.classList.contains('open');
   body.classList.toggle('open', !isOpen);
   arrow.classList.toggle('open', !isOpen);
@@ -969,20 +1019,18 @@ function collapseAll() {
 
 function updateIconField(idx, value) {
   const trimmed = value.trim();
-  plugins[idx].icon = trimmed || undefined;
-  if (!trimmed) delete plugins[idx].icon;
+  if (trimmed) plugins[idx].icon = trimmed;
+  else delete plugins[idx].icon;
 
   const preview = document.getElementById('iconpreview-' + idx);
-  const bubble = document.getElementById('iconbubble-' + idx);
-  const hint = document.getElementById('iconhint-' + idx);
+  const bubble  = document.getElementById('iconbubble-' + idx);
+  const hint    = document.getElementById('iconhint-' + idx);
   const mainIcon = document.getElementById('card-' + idx)?.querySelector('.plugin-icon .material-icons-round');
 
   const resolvedIcon = trimmed || 'extension';
-  if (preview) preview.textContent = resolvedIcon;
-  if (bubble) bubble.classList.toggle('custom', !!trimmed);
-  if (hint) hint.textContent = trimmed
-    ? '\u2736 Custom icon set \u2014 saved to JSON'
-    : 'No icon set \u2014 will show default puzzle piece';
+  if (preview)  preview.textContent = resolvedIcon;
+  if (bubble)   bubble.classList.toggle('custom', !!trimmed);
+  if (hint)     hint.textContent = trimmed ? '\u2736 Custom icon set \u2014 saved to JSON' : 'No icon set \u2014 will show default puzzle piece';
   if (mainIcon) mainIcon.textContent = resolvedIcon;
 }
 
@@ -994,7 +1042,6 @@ function clearIconField(idx) {
 
 function updateField(idx, key, value) {
   plugins[idx][key] = value;
-
   const card = document.getElementById('card-' + idx);
   if (card) {
     const nm = card.querySelector('.plugin-name');
@@ -1009,12 +1056,10 @@ function updateField(idx, key, value) {
 function addPlugin() {
   plugins.push({ name: '', author: '', link: '', description: '' });
   renderAll();
-
   const newIdx = plugins.length - 1;
   setTimeout(() => {
     toggleCard(newIdx);
-    const card = document.getElementById('card-' + newIdx);
-    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('card-' + newIdx)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 50);
   updateCounts(plugins.length);
 }
@@ -1041,8 +1086,7 @@ function applySearch() {
 
 function updateCounts(filtered) {
   const total = plugins.length;
-  document.getElementById('pluginCount').textContent =
-    total === 1 ? '1 plugin' : total + ' plugins';
+  document.getElementById('pluginCount').textContent = total === 1 ? '1 plugin' : total + ' plugins';
   const fc = document.getElementById('filterCount');
   if (searchQuery && filtered !== total) {
     fc.textContent = `Showing ${filtered} of ${total}`;
@@ -1069,7 +1113,6 @@ async function copyToClipboard() {
     await navigator.clipboard.writeText(json);
     showSnack('JSON copied to clipboard!');
   } catch {
-
     const ta = document.createElement('textarea');
     ta.value = json;
     document.body.appendChild(ta);
@@ -1082,7 +1125,7 @@ async function copyToClipboard() {
 
 function showSnack(msg, type) {
   const snack = document.getElementById('snackbar');
-  const icon = snack.querySelector('.material-icons-round');
+  const icon  = snack.querySelector('.material-icons-round');
   document.getElementById('snackMsg').textContent = msg;
   icon.textContent = type === 'error' ? 'error' : 'check_circle';
   icon.style.color = type === 'error'
@@ -1093,68 +1136,67 @@ function showSnack(msg, type) {
   snackTimer = setTimeout(() => snack.classList.remove('show'), 3000);
 }
 
-
 const ICON_RULES = [
-  { icon: 'music_note',        label: 'Music',         keywords: ['music', 'spotify', 'audio', 'song', 'playlist'] },
-  { icon: 'movie',             label: 'Video',          keywords: ['video', 'youtube', 'movie', 'film', 'stream', 'twitch'] },
-  { icon: 'radio',             label: 'Radio',          keywords: ['radio', 'podcast', 'broadcast'] },
-  { icon: 'gif_box',           label: 'GIF',            keywords: ['gif', 'tenor', 'giphy'] },
-  { icon: 'image',             label: 'Image',          keywords: ['image', 'photo', 'picture', 'gallery'] },
-  { icon: 'tv',                label: 'TV',             keywords: ['tv', 'television', 'plex', 'jellyfin'] },
-  { icon: 'palette',           label: 'Theme/Style',    keywords: ['theme', 'style', 'appearance', 'skin'] },
-  { icon: 'format_size',       label: 'Font',           keywords: ['font', 'typography'] },
-  { icon: 'dark_mode',         label: 'Dark Mode',      keywords: ['dark', 'night', 'amoled', 'dim'] },
-  { icon: 'animation',         label: 'Animation',      keywords: ['animation', 'motion', 'transition', 'particle'] },
-  { icon: 'wallpaper',         label: 'Background',     keywords: ['background', 'wallpaper', 'banner', 'backdrop'] },
-  { icon: 'emoji_emotions',    label: 'Emoji',          keywords: ['emoji', 'emote', 'reaction', 'sticker'] },
-  { icon: 'chat',              label: 'Chat/Messages',  keywords: ['chat', 'message', 'dm', 'reply'] },
-  { icon: 'group',             label: 'Server/Group',   keywords: ['group', 'server', 'guild', 'community', 'channel'] },
-  { icon: 'call',              label: 'Voice/Call',     keywords: ['call', 'voice', 'voip'] },
-  { icon: 'videocam',          label: 'Video Call',     keywords: ['video call', 'screenshare', 'webcam'] },
-  { icon: 'notifications',     label: 'Notifications',  keywords: ['notif', 'notification', 'alert', 'ping', 'mention'] },
-  { icon: 'mail',              label: 'Mail',           keywords: ['mail', 'email', 'inbox'] },
-  { icon: 'task',              label: 'Tasks',          keywords: ['todo', 'task', 'checklist', 'reminder'] },
-  { icon: 'calendar_month',    label: 'Calendar',       keywords: ['calendar', 'schedule', 'event'] },
-  { icon: 'timer',             label: 'Timer',          keywords: ['timer', 'stopwatch', 'countdown', 'pomodoro'] },
-  { icon: 'edit_note',         label: 'Notes',          keywords: ['note', 'notepad', 'journal', 'diary'] },
-  { icon: 'snippet_folder',    label: 'Snippets',       keywords: ['snippet', 'clipboard', 'paste', 'template'] },
-  { icon: 'calculate',         label: 'Calculator',     keywords: ['calculat', 'math'] },
-  { icon: 'code',              label: 'Code',           keywords: ['code', 'developer', 'syntax', 'markdown'] },
-  { icon: 'terminal',          label: 'Terminal',       keywords: ['terminal', 'console', 'shell', 'command'] },
-  { icon: 'api',               label: 'API',            keywords: ['api', 'webhook', 'endpoint', 'integration'] },
-  { icon: 'database',          label: 'Database',       keywords: ['database', 'db', 'sql'] },
-  { icon: 'cloud',             label: 'Cloud/Sync',     keywords: ['cloud', 'sync', 'backup'] },
-  { icon: 'search',            label: 'Search',         keywords: ['search', 'lookup', 'query'] },
-  { icon: 'translate',         label: 'Translate',      keywords: ['translat', 'language'] },
-  { icon: 'info',              label: 'Info/Help',      keywords: ['info', 'help', 'guide', 'faq', 'wiki', 'docs'] },
-  { icon: 'bar_chart',         label: 'Stats',          keywords: ['stats', 'chart', 'graph', 'analytics', 'metrics'] },
-  { icon: 'rss_feed',          label: 'RSS/Feed',       keywords: ['rss', 'feed', 'headlines'] },
-  { icon: 'link',              label: 'Link/Embed',     keywords: ['link', 'url', 'embed', 'preview'] },
-  { icon: 'lock',              label: 'Security',       keywords: ['password', 'auth', '2fa', 'secure', 'privacy'] },
-  { icon: 'shield',            label: 'Moderation',     keywords: ['shield', 'moderat', 'protect'] },
-  { icon: 'admin_panel_settings', label: 'Admin',       keywords: ['admin', 'moderator', 'permissions', 'role'] },
-  { icon: 'manage_accounts',   label: 'Profile/Badge',  keywords: ['badge', 'account', 'profile', 'user', 'avatar'] },
-  { icon: 'casino',            label: 'Casino',         keywords: ['dice', 'casino', 'slots', 'roulette'] },
-  { icon: 'sports_esports',    label: 'Gaming',         keywords: ['gaming', 'esports', 'steam', 'leaderboard', 'xp'] },
-  { icon: 'celebration',       label: 'Events',         keywords: ['giveaway', 'birthday', 'celebrat', 'party'] },
-  { icon: 'quiz',              label: 'Quiz',           keywords: ['quiz', 'trivia'] },
-  { icon: 'redeem',            label: 'Economy',        keywords: ['economy', 'coins', 'currency', 'shop', 'points'] },
-  { icon: 'music_video',       label: 'Lyrics',         keywords: ['lyrics', 'karaoke'] },
-  { icon: 'spellcheck',        label: 'Spell/Grammar',  keywords: ['uppercase', 'capitaliz', 'autocorrect', 'grammar', 'spell'] },
-  { icon: 'schedule',          label: 'Timezone',       keywords: ['timezone', 'time zone'] },
-  { icon: 'keyboard',          label: 'Keyboard',       keywords: ['keyboard', 'shortcut', 'hotkey', 'keybind'] },
-  { icon: 'gradient',          label: 'Gradient/Color', keywords: ['gradient', 'colour', 'color'] },
-  { icon: 'home',              label: 'Home/Button',    keywords: ['home', 'button', 'icon', 'logo'] },
-  { icon: 'developer_mode',    label: 'DevTools',       keywords: ['devtools', 'inspect', 'console'] },
-  { icon: 'block',             label: 'Block/Hide',     keywords: ['block', 'hide', 'suppress', 'silent'] },
-  { icon: 'swap_vert',         label: 'Scroll',         keywords: ['scroll', 'smooth'] },
-  { icon: 'people',            label: 'Members/Panel',  keywords: ['member', 'panel', 'sidebar'] },
-  { icon: 'build',             label: 'Fix/Patch',      keywords: ['duplicate', 'dupe', 'fix', 'glitch'] },
-  { icon: 'theater_comedy',    label: 'Masquerade',     keywords: ['impersonat', 'masquerade', 'pfp', 'disguise'] },
-  { icon: 'volume_up',         label: 'Sound/SFX',      keywords: ['sound', 'noise', 'sfx'] },
-  { icon: 'bookmark',          label: 'Favourites',     keywords: ['favourites', 'favorites', 'bookmark', 'saved'] },
-  { icon: 'attach_file',       label: 'Attachments',    keywords: ['attach', 'file', 'copy link'] },
-  { icon: 'extension',         label: 'Default',        keywords: ['(fallback — no keywords matched)'] },
+  { icon: 'music_note',           label: 'Music',          keywords: ['music', 'spotify', 'audio', 'song', 'playlist'] },
+  { icon: 'movie',                label: 'Video',           keywords: ['video', 'youtube', 'movie', 'film', 'stream', 'twitch'] },
+  { icon: 'radio',                label: 'Radio',           keywords: ['radio', 'podcast', 'broadcast'] },
+  { icon: 'gif_box',              label: 'GIF',             keywords: ['gif', 'tenor', 'giphy'] },
+  { icon: 'image',                label: 'Image',           keywords: ['image', 'photo', 'picture', 'gallery'] },
+  { icon: 'tv',                   label: 'TV',              keywords: ['tv', 'television', 'plex', 'jellyfin'] },
+  { icon: 'palette',              label: 'Theme/Style',     keywords: ['theme', 'style', 'appearance', 'skin'] },
+  { icon: 'format_size',          label: 'Font',            keywords: ['font', 'typography'] },
+  { icon: 'dark_mode',            label: 'Dark Mode',       keywords: ['dark', 'night', 'amoled', 'dim'] },
+  { icon: 'animation',            label: 'Animation',       keywords: ['animation', 'motion', 'transition', 'particle'] },
+  { icon: 'wallpaper',            label: 'Background',      keywords: ['background', 'wallpaper', 'banner', 'backdrop'] },
+  { icon: 'emoji_emotions',       label: 'Emoji',           keywords: ['emoji', 'emote', 'reaction', 'sticker'] },
+  { icon: 'chat',                 label: 'Chat/Messages',   keywords: ['chat', 'message', 'dm', 'reply'] },
+  { icon: 'group',                label: 'Server/Group',    keywords: ['group', 'server', 'guild', 'community', 'channel'] },
+  { icon: 'call',                 label: 'Voice/Call',      keywords: ['call', 'voice', 'voip'] },
+  { icon: 'videocam',             label: 'Video Call',      keywords: ['video call', 'screenshare', 'webcam'] },
+  { icon: 'notifications',        label: 'Notifications',   keywords: ['notif', 'notification', 'alert', 'ping', 'mention'] },
+  { icon: 'mail',                 label: 'Mail',            keywords: ['mail', 'email', 'inbox'] },
+  { icon: 'task',                 label: 'Tasks',           keywords: ['todo', 'task', 'checklist', 'reminder'] },
+  { icon: 'calendar_month',       label: 'Calendar',        keywords: ['calendar', 'schedule', 'event'] },
+  { icon: 'timer',                label: 'Timer',           keywords: ['timer', 'stopwatch', 'countdown', 'pomodoro'] },
+  { icon: 'edit_note',            label: 'Notes',           keywords: ['note', 'notepad', 'journal', 'diary'] },
+  { icon: 'snippet_folder',       label: 'Snippets',        keywords: ['snippet', 'clipboard', 'paste', 'template'] },
+  { icon: 'calculate',            label: 'Calculator',      keywords: ['calculat', 'math'] },
+  { icon: 'code',                 label: 'Code',            keywords: ['code', 'developer', 'syntax', 'markdown'] },
+  { icon: 'terminal',             label: 'Terminal',        keywords: ['terminal', 'console', 'shell', 'command'] },
+  { icon: 'api',                  label: 'API',             keywords: ['api', 'webhook', 'endpoint', 'integration'] },
+  { icon: 'database',             label: 'Database',        keywords: ['database', 'db', 'sql'] },
+  { icon: 'cloud',                label: 'Cloud/Sync',      keywords: ['cloud', 'sync', 'backup'] },
+  { icon: 'search',               label: 'Search',          keywords: ['search', 'lookup', 'query'] },
+  { icon: 'translate',            label: 'Translate',       keywords: ['translat', 'language'] },
+  { icon: 'info',                 label: 'Info/Help',       keywords: ['info', 'help', 'guide', 'faq', 'wiki', 'docs'] },
+  { icon: 'bar_chart',            label: 'Stats',           keywords: ['stats', 'chart', 'graph', 'analytics', 'metrics'] },
+  { icon: 'rss_feed',             label: 'RSS/Feed',        keywords: ['rss', 'feed', 'headlines'] },
+  { icon: 'link',                 label: 'Link/Embed',      keywords: ['link', 'url', 'embed', 'preview'] },
+  { icon: 'lock',                 label: 'Security',        keywords: ['password', 'auth', '2fa', 'secure', 'privacy'] },
+  { icon: 'shield',               label: 'Moderation',      keywords: ['shield', 'moderat', 'protect'] },
+  { icon: 'admin_panel_settings', label: 'Admin',           keywords: ['admin', 'moderator', 'permissions', 'role'] },
+  { icon: 'manage_accounts',      label: 'Profile/Badge',   keywords: ['badge', 'account', 'profile', 'user', 'avatar'] },
+  { icon: 'casino',               label: 'Casino',          keywords: ['dice', 'casino', 'slots', 'roulette'] },
+  { icon: 'sports_esports',       label: 'Gaming',          keywords: ['gaming', 'esports', 'steam', 'leaderboard', 'xp'] },
+  { icon: 'celebration',          label: 'Events',          keywords: ['giveaway', 'birthday', 'celebrat', 'party'] },
+  { icon: 'quiz',                 label: 'Quiz',            keywords: ['quiz', 'trivia'] },
+  { icon: 'redeem',               label: 'Economy',         keywords: ['economy', 'coins', 'currency', 'shop', 'points'] },
+  { icon: 'music_video',          label: 'Lyrics',          keywords: ['lyrics', 'karaoke'] },
+  { icon: 'spellcheck',           label: 'Spell/Grammar',   keywords: ['uppercase', 'capitaliz', 'autocorrect', 'grammar', 'spell'] },
+  { icon: 'schedule',             label: 'Timezone',        keywords: ['timezone', 'time zone'] },
+  { icon: 'keyboard',             label: 'Keyboard',        keywords: ['keyboard', 'shortcut', 'hotkey', 'keybind'] },
+  { icon: 'gradient',             label: 'Gradient/Color',  keywords: ['gradient', 'colour', 'color'] },
+  { icon: 'home',                 label: 'Home/Button',     keywords: ['home', 'button', 'icon', 'logo'] },
+  { icon: 'developer_mode',       label: 'DevTools',        keywords: ['devtools', 'inspect', 'console'] },
+  { icon: 'block',                label: 'Block/Hide',      keywords: ['block', 'hide', 'suppress', 'silent'] },
+  { icon: 'swap_vert',            label: 'Scroll',          keywords: ['scroll', 'smooth'] },
+  { icon: 'people',               label: 'Members/Panel',   keywords: ['member', 'panel', 'sidebar'] },
+  { icon: 'build',                label: 'Fix/Patch',       keywords: ['duplicate', 'dupe', 'fix', 'glitch'] },
+  { icon: 'theater_comedy',       label: 'Masquerade',      keywords: ['impersonat', 'masquerade', 'pfp', 'disguise'] },
+  { icon: 'volume_up',            label: 'Sound/SFX',       keywords: ['sound', 'noise', 'sfx'] },
+  { icon: 'bookmark',             label: 'Favourites',      keywords: ['favourites', 'favorites', 'bookmark', 'saved'] },
+  { icon: 'attach_file',          label: 'Attachments',     keywords: ['attach', 'file', 'copy link'] },
+  { icon: 'extension',            label: 'Default',         keywords: ['(fallback — no keywords matched)'] },
 ];
 
 let iconRefVisible = false;
@@ -1173,9 +1215,7 @@ function renderIconRef(query) {
   grid.innerHTML = '';
   const q = query.toLowerCase();
   const filtered = ICON_RULES.filter(r =>
-    !q
-    || r.label.toLowerCase().includes(q)
-    || r.keywords.some(k => k.includes(q))
+    !q || r.label.toLowerCase().includes(q) || r.keywords.some(k => k.includes(q))
   );
   filtered.forEach(rule => {
     const chip = document.createElement('div');
@@ -1200,48 +1240,35 @@ function renderIconRef(query) {
 function filterIconRef() {
   renderIconRef(document.getElementById('iconRefSearch').value);
 }
-
 </script>
 
 <script>
-
 (function(){
-
-if(window.__ROLE_MENTION_EXTRACTOR__) return;
-window.__ROLE_MENTION_EXTRACTOR__ = true;
-
-const originalFetch = window.fetch;
-
-window.fetch = async (...args) => {
+  if(window.__ROLE_MENTION_EXTRACTOR__) return;
+  window.__ROLE_MENTION_EXTRACTOR__ = true;
+  const originalFetch = window.fetch;
+  window.fetch = async (...args) => {
     const res = await originalFetch(...args);
     try {
-        const clone = res.clone();
-        const data = await clone.json();
-        scan(data);
+      const clone = res.clone();
+      const data = await clone.json();
+      scan(data);
     } catch {}
     return res;
-};
-
-function scan(obj){
+  };
+  function scan(obj){
     if(!obj) return;
-    if(Array.isArray(obj)){
-        obj.forEach(scan);
-        return;
-    }
+    if(Array.isArray(obj)){ obj.forEach(scan); return; }
     if(typeof obj === "object"){
-        if(typeof obj.content === "string"){
-            const matches = obj.content.match(/<%[A-Z0-9]+>/g);
-            if(matches){
-                matches.forEach(roleMention=>{
-                    console.log("Role mention found:", `"${roleMention}"`);
-                });
-            }
-        }
-        Object.values(obj).forEach(scan);
+      if(typeof obj.content === "string"){
+        const matches = obj.content.match(/<%[A-Z0-9]+>/g);
+        if(matches) matches.forEach(r => console.log("Role mention found:", `"${r}"`));
+      }
+      Object.values(obj).forEach(scan);
     }
-}
-
+  }
 })();
 </script>
+
 </body>
 </html>
