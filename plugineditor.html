@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avia Plugin Backend Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Google+Sans+Display:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root {
+    --md-sys-color-primary: #D0BCFF;
+    --md-sys-color-on-primary: #381E72;
+    --md-sys-color-primary-container: #4F378B;
+    --md-sys-color-on-primary-container: #EADDFF;
+    --md-sys-color-secondary: #CCC2DC;
+    --md-sys-color-on-secondary: #332D41;
+    --md-sys-color-secondary-container: #4A4458;
+    --md-sys-color-on-secondary-container: #E8DEF8;
+    --md-sys-color-tertiary: #EFB8C8;
+    --md-sys-color-on-tertiary: #492532;
+    --md-sys-color-tertiary-container: #633B48;
+    --md-sys-color-on-tertiary-container: #FFD8E4;
+    --md-sys-color-error: #F2B8B5;
+    --md-sys-color-on-error: #601410;
+    --md-sys-color-error-container: #8C1D18;
+    --md-sys-color-on-error-container: #F9DEDC;
+    --md-sys-color-background: #141218;
+    --md-sys-color-on-background: #E6E0E9;
+    --md-sys-color-surface: #141218;
+    --md-sys-color-on-surface: #E6E0E9;
+    --md-sys-color-surface-variant: #49454F;
+    --md-sys-color-on-surface-variant: #CAC4D0;
+    --md-sys-color-outline: #938F99;
+    --md-sys-color-outline-variant: #49454F;
+    --md-sys-color-surface-container-lowest: #0F0D13;
+    --md-sys-color-surface-container-low: #1D1B20;
+    --md-sys-color-surface-container: #211F26;
+    --md-sys-color-surface-container-high: #2B2930;
+    --md-sys-color-surface-container-highest: #36343B;
+    --md-sys-color-inverse-surface: #E6E0E9;
+    --md-sys-color-inverse-on-surface: #322F37;
+    --md-sys-color-inverse-primary: #6750A4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Google Sans', sans-serif;
+    background: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    min-height: 100vh;
+  }
+
+  /* Top App Bar */
+  .top-bar {
+    background: var(--md-sys-color-surface-container);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .top-bar .material-icons-round { color: var(--md-sys-color-on-surface-variant); font-size: 24px; }
+  .top-bar h1 {
+    font-family: 'Google Sans Display', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+    flex: 1;
+  }
+  .top-bar .badge {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  /* Layout */
+  .layout {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .material-icons-round { font-size: 18px; }
+
+  /* URL Loader */
+  .url-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .url-input-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .url-input-wrap .material-icons-round {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 20px;
+    pointer-events: none;
+  }
+  .field {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 12px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    padding: 14px 14px 14px 44px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field:focus { border-color: var(--md-sys-color-primary); }
+  .field::placeholder { color: var(--md-sys-color-on-surface-variant); }
+
+  .preset-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 20px;
+    padding: 6px 14px 6px 10px;
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-color: var(--md-sys-color-secondary-container);
+  }
+  .chip .material-icons-round { font-size: 16px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.1px;
+  }
+  .btn .material-icons-round { font-size: 18px; }
+  .btn-filled {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+  }
+  .btn-filled:hover { filter: brightness(1.1); box-shadow: 0 2px 8px rgba(208,188,255,0.3); }
+  .btn-tonal {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+  }
+  .btn-tonal:hover { filter: brightness(1.1); }
+  .btn-outlined {
+    background: transparent;
+    border: 1px solid var(--md-sys-color-outline);
+    color: var(--md-sys-color-primary);
+  }
+  .btn-outlined:hover { background: rgba(208,188,255,0.08); }
+  .btn-error {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+  }
+  .btn-error:hover { filter: brightness(1.2); }
+  .btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+  /* Search + toolbar */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .search-wrap .material-icons-round {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 20px;
+    pointer-events: none;
+  }
+  #searchInput {
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 28px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px 12px 46px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #searchInput:focus {
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px rgba(208,188,255,0.15);
+  }
+  #searchInput::placeholder { color: var(--md-sys-color-on-surface-variant); }
+
+  .count-label {
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    white-space: nowrap;
+  }
+
+  /* Plugin list */
+  #pluginList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .plugin-card {
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .plugin-card:hover { border-color: var(--md-sys-color-outline); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .plugin-card.editing { border-color: var(--md-sys-color-primary); }
+
+  .plugin-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .plugin-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .plugin-icon .material-icons-round { font-size: 22px; }
+  .plugin-meta { flex: 1; overflow: hidden; }
+  .plugin-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--md-sys-color-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .plugin-author {
+    font-size: 12px;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 2px;
+  }
+  .plugin-actions { display: flex; gap: 4px; align-items: center; }
+  .icon-btn {
+    background: none;
+    border: none;
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: background 0.15s, color 0.15s;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--md-sys-color-on-surface); }
+  .icon-btn.delete:hover { background: rgba(242,184,181,0.12); color: var(--md-sys-color-error); }
+  .icon-btn .material-icons-round { font-size: 20px; }
+  .expand-arrow {
+    transition: transform 0.2s;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .expand-arrow.open { transform: rotate(180deg); }
+
+  .plugin-body {
+    display: none;
+    padding: 0 16px 16px;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .plugin-body.open { display: flex; }
+
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 4px;
+  }
+  .inline-field {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 10px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .inline-field:focus { border-color: var(--md-sys-color-primary); }
+  .inline-field.mono { font-family: 'Roboto Mono', monospace; font-size: 13px; }
+
+  /* Snackbar */
+  #snackbar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    border-radius: 8px;
+    padding: 14px 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    white-space: nowrap;
+  }
+  #snackbar.show { transform: translateX(-50%) translateY(0); }
+  #snackbar .material-icons-round { font-size: 20px; color: var(--md-sys-color-primary); }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--md-sys-color-on-surface-variant);
+    display: none;
+  }
+  .empty-state .material-icons-round { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+  .empty-state p { font-size: 15px; }
+
+  /* Loading */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(208,188,255,0.3);
+    border-top-color: var(--md-sys-color-primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .divider { height: 1px; background: var(--md-sys-color-outline-variant); }
+
+  .highlight { background: rgba(208,188,255,0.2); border-radius: 3px; }
+  /* Icon field */
+  .icon-field-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .icon-preview-bubble {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .icon-preview-bubble .material-icons-round { font-size: 22px; }
+  .icon-preview-bubble.custom {
+    background: var(--md-sys-color-tertiary-container);
+    color: var(--md-sys-color-on-tertiary-container);
+  }
+  .icon-field-hint {
+    font-size: 11px;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 4px;
+  }
+  .icon-clear-btn {
+    background: none;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .icon-clear-btn:hover {
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    border-color: transparent;
+  }
+  .icon-clear-btn .material-icons-round { font-size: 14px; }
+
+  /* Icon Reference */
+  .icon-ref-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .icon-ref-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 20px;
+    padding: 5px 12px 5px 8px;
+    font-size: 12px;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .icon-ref-chip:hover {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-color: var(--md-sys-color-secondary-container);
+  }
+  .icon-ref-chip .material-icons-round { font-size: 16px; flex-shrink: 0; }
+  .icon-ref-chip .chip-keywords {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-left: 2px;
+  }
+  .icon-ref-search-wrap {
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .icon-ref-search-wrap .material-icons-round {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--md-sys-color-on-surface-variant);
+    pointer-events: none;
+  }
+  #iconRefSearch {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 10px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 13px;
+    padding: 9px 12px 9px 38px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #iconRefSearch:focus { border-color: var(--md-sys-color-primary); }
+  #iconRefSearch::placeholder { color: var(--md-sys-color-on-surface-variant); }
+  .icon-ref-helper {
+    font-size: 12px;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .icon-ref-helper code {
+    background: var(--md-sys-color-surface-container-highest);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
+    color: var(--md-sys-color-primary);
+  }
+  .copied-hint {
+    font-size: 11px;
+    color: var(--md-sys-color-primary);
+    margin-top: 8px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+  .copied-hint .material-icons-round { font-size: 14px; }
+
+  /* Paste area */
+  .paste-area {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 12px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    padding: 12px 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+  .paste-area:focus { border-color: var(--md-sys-color-primary); }
+  .paste-area::placeholder { color: var(--md-sys-color-on-surface-variant); font-family: 'Google Sans', sans-serif; font-size: 13px; }
+
+  /* Method tabs */
+  .method-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .method-tab {
+    flex: 1;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .method-tab .material-icons-round { font-size: 16px; }
+  .method-tab.active {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-color: var(--md-sys-color-primary-container);
+  }
+  .method-panel { display: none; }
+  .method-panel.active { display: block; }
+
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <span class="material-icons-round">extension</span>
+  <h1>Plugin Backend Editor</h1>
+  <span class="badge" id="pluginCount">0 plugins</span>
+</div>
+
+<div class="layout">
+
+  <!-- Load Backend -->
+  <div class="card">
+    <div class="card-title">
+      <span class="material-icons-round">cloud_download</span>
+      Load Backend
+    </div>
+
+    <!-- Method tabs -->
+    <div class="method-tabs">
+      <button class="method-tab active" id="tab-url" onclick="switchMethod('url')">
+        <span class="material-icons-round">link</span>
+        Load from URL
+      </button>
+      <button class="method-tab" id="tab-paste" onclick="switchMethod('paste')">
+        <span class="material-icons-round">content_paste</span>
+        Paste JSON
+      </button>
+    </div>
+
+    <!-- URL panel -->
+    <div class="method-panel active" id="panel-url">
+      <div class="url-row">
+        <div class="url-input-wrap">
+          <span class="material-icons-round">link</span>
+          <input class="field" id="urlInput" type="text"
+            placeholder="Paste GitHub / Codeberg raw URL..."
+            value="raw.githubusercontent.com/AvaLilac/PluginRepo/refs/heads/main/pluginrepobackend.js">
+        </div>
+        <div class="spinner" id="spinner"></div>
+        <button class="btn btn-filled" onclick="loadFromURL()">
+          <span class="material-icons-round">download</span>
+          Load URL
+        </button>
+      </div>
+      <div class="preset-chips">
+        <div class="chip" onclick="setPreset('github')">
+          <span class="material-icons-round">hub</span>
+          AvaLilac GitHub (default)
+        </div>
+        <span style="font-size:12px; color:var(--md-sys-color-on-surface-variant); align-self:center; margin-left:4px;">
+          GitHub &amp; Codeberg raw URLs both work
+        </span>
+      </div>
+    </div>
+
+    <!-- Paste panel -->
+    <div class="method-panel" id="panel-paste">
+      <textarea class="paste-area" id="pasteInput" rows="6"
+        placeholder='Paste your backend JSON here, e.g. {"plugins":[...]}'></textarea>
+      <div style="margin-top:10px; display:flex; gap:10px;">
+        <button class="btn btn-filled" onclick="loadFromPaste()">
+          <span class="material-icons-round">upload</span>
+          Load JSON
+        </button>
+        <button class="btn btn-outlined" onclick="document.getElementById('pasteInput').value=''">
+          <span class="material-icons-round">clear</span>
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Icon Reference -->
+  <div class="card">
+    <div class="card-title" style="cursor:pointer; margin-bottom:0;" onclick="toggleIconRef()">
+      <span class="material-icons-round">auto_awesome</span>
+      Icon Rules Reference
+      <span class="material-icons-round" id="iconRefArrow" style="margin-left:auto; font-size:20px; transition:transform 0.2s;">expand_more</span>
+    </div>
+    <div id="iconRefBody" style="display:none; margin-top:16px;">
+      <p class="icon-ref-helper">
+        Icons are auto-assigned based on keywords found in the plugin's <code>name</code> or <code>description</code>.
+        Click any chip to copy its trigger keyword — then paste it into a plugin's name or description to force that icon.
+      </p>
+      <div class="icon-ref-search-wrap">
+        <span class="material-icons-round">search</span>
+        <input id="iconRefSearch" type="text" placeholder="Filter icons..." oninput="filterIconRef()">
+      </div>
+      <div class="icon-ref-grid" id="iconRefGrid"></div>
+      <div class="copied-hint" id="copiedHint">
+        <span class="material-icons-round">check</span>
+        <span id="copiedWord"></span> copied — paste it into a name or description
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar + Search -->
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="material-icons-round">search</span>
+        <input id="searchInput" type="text" placeholder="Search plugins by name, author, or description..." oninput="applySearch()">
+      </div>
+      <span class="count-label" id="filterCount"></span>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-tonal" onclick="addPlugin()">
+        <span class="material-icons-round">add</span>
+        Add Plugin
+      </button>
+      <button class="btn btn-error" onclick="deleteAll()">
+        <span class="material-icons-round">delete_sweep</span>
+        Delete All
+      </button>
+      <button class="btn btn-outlined" onclick="copyToClipboard()">
+        <span class="material-icons-round">content_copy</span>
+        Copy JSON
+      </button>
+      <button class="btn btn-outlined" onclick="expandAll()">
+        <span class="material-icons-round">unfold_more</span>
+        Expand All
+      </button>
+      <button class="btn btn-outlined" onclick="collapseAll()">
+        <span class="material-icons-round">unfold_less</span>
+        Collapse All
+      </button>
+    </div>
+  </div>
+
+  <!-- Plugin List -->
+  <div id="pluginList"></div>
+  <div class="empty-state" id="emptyState">
+    <div class="material-icons-round">search_off</div>
+    <p id="emptyMsg">No plugins match your search.</p>
+  </div>
+
+</div>
+
+<!-- Snackbar -->
+<div id="snackbar">
+  <span class="material-icons-round">check_circle</span>
+  <span id="snackMsg">Done!</span>
+</div>
+
+<script>
+let plugins = [];
+let searchQuery = '';
+let snackTimer = null;
+
+
+function switchMethod(method) {
+  document.getElementById('tab-url').classList.toggle('active', method === 'url');
+  document.getElementById('tab-paste').classList.toggle('active', method === 'paste');
+  document.getElementById('panel-url').classList.toggle('active', method === 'url');
+  document.getElementById('panel-paste').classList.toggle('active', method === 'paste');
+}
+
+function loadFromPaste() {
+  const raw = document.getElementById('pasteInput').value.trim();
+  if (!raw) { showSnack('Nothing pasted yet', 'error'); return; }
+  try {
+    const json = JSON.parse(raw);
+    if (!json.plugins || !Array.isArray(json.plugins)) throw new Error('No "plugins" array found');
+    plugins = json.plugins;
+    renderAll();
+    showSnack(`Loaded ${plugins.length} plugins from JSON`);
+  } catch (e) {
+    showSnack('Invalid JSON: ' + e.message, 'error');
+  }
+}
+
+const PRESETS = {
+  github: 'raw.githubusercontent.com/AvaLilac/PluginRepo/refs/heads/main/pluginrepobackend.js',
+  codeberg: 'codeberg.org/AvaLilac/Ava-s-AviaClient-Plugins/raw/branch/main/AppleEmoji.js'
+};
+
+function setPreset(key) {
+  document.getElementById('urlInput').value = PRESETS[key];
+}
+
+function normalizeURL(raw) {
+  raw = raw.trim();
+
+  if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+
+  if (raw.includes('codeberg.org') && raw.includes('/src/branch/')) {
+    raw = raw.replace('/src/branch/', '/raw/branch/');
+  }
+
+  return raw;
+}
+
+async function loadFromURL() {
+  const raw = document.getElementById('urlInput').value;
+  if (!raw.trim()) { showSnack('Please enter a URL', 'error'); return; }
+
+  const url = normalizeURL(raw);
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = 'block';
+
+  try {
+
+    const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch {
+
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) json = JSON.parse(match[0]);
+      else throw new Error('Could not parse JSON from response');
+    }
+
+    if (!json.plugins || !Array.isArray(json.plugins)) {
+      throw new Error('No "plugins" array found in response');
+    }
+
+    plugins = json.plugins;
+    renderAll();
+    showSnack(`Loaded ${plugins.length} plugins successfully`);
+  } catch (e) {
+    showSnack('Failed to load: ' + e.message, 'error');
+    console.error(e);
+  } finally {
+    spinner.style.display = 'none';
+  }
+}
+
+function getIconForPlugin(p) {
+  return p.icon || 'extension';
+}
+
+function renderAll() {
+  const q = searchQuery.toLowerCase();
+  const list = document.getElementById('pluginList');
+  const empty = document.getElementById('emptyState');
+  list.innerHTML = '';
+
+  const filtered = plugins.filter((p, i) => {
+    if (!q) return true;
+    return (p.name || '').toLowerCase().includes(q)
+        || (p.author || '').toLowerCase().includes(q)
+        || (p.description || '').toLowerCase().includes(q)
+        || (p.link || '').toLowerCase().includes(q);
+  });
+
+  updateCounts(filtered.length);
+
+  if (filtered.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('emptyMsg').textContent =
+      plugins.length === 0
+        ? 'Load a backend URL above to get started, or add plugins manually.'
+        : 'No plugins match your search.';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  filtered.forEach(plugin => {
+    const realIdx = plugins.indexOf(plugin);
+    list.appendChild(buildCard(plugin, realIdx));
+  });
+}
+
+function hl(text, q) {
+  if (!q || !text) return escHtml(text || '');
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return escHtml(text).replace(re, '<mark class="highlight">$1</mark>');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildCard(plugin, idx) {
+  const q = searchQuery.toLowerCase();
+  const card = document.createElement('div');
+  card.className = 'plugin-card';
+  card.id = 'card-' + idx;
+
+  const authorDisplay = plugin.author || 'Unknown';
+  const nameDisplay = plugin.name || '(no name)';
+
+  card.innerHTML = `
+    <div class="plugin-header" onclick="toggleCard(${idx})">
+      <div class="plugin-icon"><span class="material-icons-round">${getIconForPlugin(plugin)}</span></div>
+      <div class="plugin-meta">
+        <div class="plugin-name">${hl(nameDisplay, q)}</div>
+        <div class="plugin-author">${hl(authorDisplay, q)}</div>
+      </div>
+      <div class="plugin-actions" onclick="event.stopPropagation()">
+        <button class="icon-btn" title="Move up" onclick="movePlugin(${idx}, -1)">
+          <span class="material-icons-round">arrow_upward</span>
+        </button>
+        <button class="icon-btn" title="Move down" onclick="movePlugin(${idx}, 1)">
+          <span class="material-icons-round">arrow_downward</span>
+        </button>
+        <button class="icon-btn delete" title="Delete plugin" onclick="deletePlugin(${idx})">
+          <span class="material-icons-round">delete</span>
+        </button>
+      </div>
+      <span class="material-icons-round expand-arrow" id="arrow-${idx}">expand_more</span>
+    </div>
+    <div class="plugin-body" id="body-${idx}">
+      <div class="field-group">
+        <div class="field-label">Name</div>
+        <input class="inline-field" value="${escHtml(plugin.name || '')}" oninput="updateField(${idx},'name',this.value)">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Author</div>
+        <input class="inline-field" value="${escHtml(plugin.author || '')}" oninput="updateField(${idx},'author',this.value)">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Link</div>
+        <input class="inline-field mono" value="${escHtml(plugin.link || '')}" oninput="updateField(${idx},'link',this.value)" placeholder="https://raw.githubusercontent.com/...">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Description</div>
+        <input class="inline-field" value="${escHtml(plugin.description || '')}" oninput="updateField(${idx},'description',this.value)">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Icon</div>
+        <div class="icon-field-row">
+          <div class="icon-preview-bubble ${plugin.icon ? 'custom' : ''}" id="iconbubble-${idx}">
+            <span class="material-icons-round" id="iconpreview-${idx}">${plugin.icon || 'extension'}</span>
+          </div>
+          <div style="flex:1;">
+            <input class="inline-field mono" id="iconinput-${idx}"
+              value="${escHtml(plugin.icon || '')}"
+              placeholder="e.g. music_note, palette, code, shield..."
+              oninput="updateIconField(${idx}, this.value)">
+            <div class="icon-field-hint" id="iconhint-${idx}">${plugin.icon ? '✦ Icon set — saved to JSON' : 'No icon set — will show default puzzle piece'}</div>
+          </div>
+          <button class="icon-clear-btn" onclick="clearIconField(${idx})" title="Clear custom icon">
+            <span class="material-icons-round">restart_alt</span>
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function toggleCard(idx) {
+  const body = document.getElementById('body-' + idx);
+  const arrow = document.getElementById('arrow-' + idx);
+  const card = document.getElementById('card-' + idx);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+  card.classList.toggle('editing', !isOpen);
+}
+
+function expandAll() {
+  document.querySelectorAll('.plugin-body').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.expand-arrow').forEach(a => a.classList.add('open'));
+  document.querySelectorAll('.plugin-card').forEach(c => c.classList.add('editing'));
+}
+function collapseAll() {
+  document.querySelectorAll('.plugin-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.expand-arrow').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.plugin-card').forEach(c => c.classList.remove('editing'));
+}
+
+function updateIconField(idx, value) {
+  const trimmed = value.trim();
+  plugins[idx].icon = trimmed || undefined;
+  if (!trimmed) delete plugins[idx].icon;
+
+  const preview = document.getElementById('iconpreview-' + idx);
+  const bubble = document.getElementById('iconbubble-' + idx);
+  const hint = document.getElementById('iconhint-' + idx);
+  const mainIcon = document.getElementById('card-' + idx)?.querySelector('.plugin-icon .material-icons-round');
+
+  const resolvedIcon = trimmed || 'extension';
+  if (preview) preview.textContent = resolvedIcon;
+  if (bubble) bubble.classList.toggle('custom', !!trimmed);
+  if (hint) hint.textContent = trimmed
+    ? '\u2736 Custom icon set \u2014 saved to JSON'
+    : 'No icon set \u2014 will show default puzzle piece';
+  if (mainIcon) mainIcon.textContent = resolvedIcon;
+}
+
+function clearIconField(idx) {
+  delete plugins[idx].icon;
+  const input = document.getElementById('iconinput-' + idx);
+  if (input) { input.value = ''; updateIconField(idx, ''); }
+}
+
+function updateField(idx, key, value) {
+  plugins[idx][key] = value;
+
+  const card = document.getElementById('card-' + idx);
+  if (card) {
+    const nm = card.querySelector('.plugin-name');
+    const au = card.querySelector('.plugin-author');
+    const ic = card.querySelector('.plugin-icon');
+    if (nm) nm.innerHTML = hl(plugins[idx].name || '(no name)', searchQuery.toLowerCase());
+    if (au) au.innerHTML = hl(plugins[idx].author || 'Unknown', searchQuery.toLowerCase());
+    if (ic) ic.innerHTML = `<span class="material-icons-round">${plugins[idx].icon || 'extension'}</span>`;
+  }
+}
+
+function addPlugin() {
+  plugins.push({ name: '', author: '', link: '', description: '' });
+  renderAll();
+
+  const newIdx = plugins.length - 1;
+  setTimeout(() => {
+    toggleCard(newIdx);
+    const card = document.getElementById('card-' + newIdx);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+  updateCounts(plugins.length);
+}
+
+function deletePlugin(idx) {
+  const name = plugins[idx].name || 'this plugin';
+  if (!confirm(`Delete "${name}"?`)) return;
+  plugins.splice(idx, 1);
+  renderAll();
+  showSnack(`Deleted "${name}"`);
+}
+
+function movePlugin(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= plugins.length) return;
+  [plugins[idx], plugins[newIdx]] = [plugins[newIdx], plugins[idx]];
+  renderAll();
+}
+
+function applySearch() {
+  searchQuery = document.getElementById('searchInput').value;
+  renderAll();
+}
+
+function updateCounts(filtered) {
+  const total = plugins.length;
+  document.getElementById('pluginCount').textContent =
+    total === 1 ? '1 plugin' : total + ' plugins';
+  const fc = document.getElementById('filterCount');
+  if (searchQuery && filtered !== total) {
+    fc.textContent = `Showing ${filtered} of ${total}`;
+  } else {
+    fc.textContent = total > 0 ? `${total} plugins loaded` : '';
+  }
+}
+
+function deleteAll() {
+  if (plugins.length === 0) { showSnack('No plugins to delete', 'error'); return; }
+  if (!confirm(`Delete all ${plugins.length} plugins?`)) return;
+  plugins = [];
+  renderAll();
+  showSnack('All plugins deleted');
+}
+
+function generateJSON() {
+  return JSON.stringify({ plugins }, null, 2);
+}
+
+async function copyToClipboard() {
+  const json = generateJSON();
+  try {
+    await navigator.clipboard.writeText(json);
+    showSnack('JSON copied to clipboard!');
+  } catch {
+
+    const ta = document.createElement('textarea');
+    ta.value = json;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showSnack('JSON copied to clipboard!');
+  }
+}
+
+function showSnack(msg, type) {
+  const snack = document.getElementById('snackbar');
+  const icon = snack.querySelector('.material-icons-round');
+  document.getElementById('snackMsg').textContent = msg;
+  icon.textContent = type === 'error' ? 'error' : 'check_circle';
+  icon.style.color = type === 'error'
+    ? 'var(--md-sys-color-error)'
+    : 'var(--md-sys-color-primary)';
+  snack.classList.add('show');
+  clearTimeout(snackTimer);
+  snackTimer = setTimeout(() => snack.classList.remove('show'), 3000);
+}
+
+
+const ICON_RULES = [
+  { icon: 'music_note',        label: 'Music',         keywords: ['music', 'spotify', 'audio', 'song', 'playlist'] },
+  { icon: 'movie',             label: 'Video',          keywords: ['video', 'youtube', 'movie', 'film', 'stream', 'twitch'] },
+  { icon: 'radio',             label: 'Radio',          keywords: ['radio', 'podcast', 'broadcast'] },
+  { icon: 'gif_box',           label: 'GIF',            keywords: ['gif', 'tenor', 'giphy'] },
+  { icon: 'image',             label: 'Image',          keywords: ['image', 'photo', 'picture', 'gallery'] },
+  { icon: 'tv',                label: 'TV',             keywords: ['tv', 'television', 'plex', 'jellyfin'] },
+  { icon: 'palette',           label: 'Theme/Style',    keywords: ['theme', 'style', 'appearance', 'skin'] },
+  { icon: 'format_size',       label: 'Font',           keywords: ['font', 'typography'] },
+  { icon: 'dark_mode',         label: 'Dark Mode',      keywords: ['dark', 'night', 'amoled', 'dim'] },
+  { icon: 'animation',         label: 'Animation',      keywords: ['animation', 'motion', 'transition', 'particle'] },
+  { icon: 'wallpaper',         label: 'Background',     keywords: ['background', 'wallpaper', 'banner', 'backdrop'] },
+  { icon: 'emoji_emotions',    label: 'Emoji',          keywords: ['emoji', 'emote', 'reaction', 'sticker'] },
+  { icon: 'chat',              label: 'Chat/Messages',  keywords: ['chat', 'message', 'dm', 'reply'] },
+  { icon: 'group',             label: 'Server/Group',   keywords: ['group', 'server', 'guild', 'community', 'channel'] },
+  { icon: 'call',              label: 'Voice/Call',     keywords: ['call', 'voice', 'voip'] },
+  { icon: 'videocam',          label: 'Video Call',     keywords: ['video call', 'screenshare', 'webcam'] },
+  { icon: 'notifications',     label: 'Notifications',  keywords: ['notif', 'notification', 'alert', 'ping', 'mention'] },
+  { icon: 'mail',              label: 'Mail',           keywords: ['mail', 'email', 'inbox'] },
+  { icon: 'task',              label: 'Tasks',          keywords: ['todo', 'task', 'checklist', 'reminder'] },
+  { icon: 'calendar_month',    label: 'Calendar',       keywords: ['calendar', 'schedule', 'event'] },
+  { icon: 'timer',             label: 'Timer',          keywords: ['timer', 'stopwatch', 'countdown', 'pomodoro'] },
+  { icon: 'edit_note',         label: 'Notes',          keywords: ['note', 'notepad', 'journal', 'diary'] },
+  { icon: 'snippet_folder',    label: 'Snippets',       keywords: ['snippet', 'clipboard', 'paste', 'template'] },
+  { icon: 'calculate',         label: 'Calculator',     keywords: ['calculat', 'math'] },
+  { icon: 'code',              label: 'Code',           keywords: ['code', 'developer', 'syntax', 'markdown'] },
+  { icon: 'terminal',          label: 'Terminal',       keywords: ['terminal', 'console', 'shell', 'command'] },
+  { icon: 'api',               label: 'API',            keywords: ['api', 'webhook', 'endpoint', 'integration'] },
+  { icon: 'database',          label: 'Database',       keywords: ['database', 'db', 'sql'] },
+  { icon: 'cloud',             label: 'Cloud/Sync',     keywords: ['cloud', 'sync', 'backup'] },
+  { icon: 'search',            label: 'Search',         keywords: ['search', 'lookup', 'query'] },
+  { icon: 'translate',         label: 'Translate',      keywords: ['translat', 'language'] },
+  { icon: 'info',              label: 'Info/Help',      keywords: ['info', 'help', 'guide', 'faq', 'wiki', 'docs'] },
+  { icon: 'bar_chart',         label: 'Stats',          keywords: ['stats', 'chart', 'graph', 'analytics', 'metrics'] },
+  { icon: 'rss_feed',          label: 'RSS/Feed',       keywords: ['rss', 'feed', 'headlines'] },
+  { icon: 'link',              label: 'Link/Embed',     keywords: ['link', 'url', 'embed', 'preview'] },
+  { icon: 'lock',              label: 'Security',       keywords: ['password', 'auth', '2fa', 'secure', 'privacy'] },
+  { icon: 'shield',            label: 'Moderation',     keywords: ['shield', 'moderat', 'protect'] },
+  { icon: 'admin_panel_settings', label: 'Admin',       keywords: ['admin', 'moderator', 'permissions', 'role'] },
+  { icon: 'manage_accounts',   label: 'Profile/Badge',  keywords: ['badge', 'account', 'profile', 'user', 'avatar'] },
+  { icon: 'casino',            label: 'Casino',         keywords: ['dice', 'casino', 'slots', 'roulette'] },
+  { icon: 'sports_esports',    label: 'Gaming',         keywords: ['gaming', 'esports', 'steam', 'leaderboard', 'xp'] },
+  { icon: 'celebration',       label: 'Events',         keywords: ['giveaway', 'birthday', 'celebrat', 'party'] },
+  { icon: 'quiz',              label: 'Quiz',           keywords: ['quiz', 'trivia'] },
+  { icon: 'redeem',            label: 'Economy',        keywords: ['economy', 'coins', 'currency', 'shop', 'points'] },
+  { icon: 'music_video',       label: 'Lyrics',         keywords: ['lyrics', 'karaoke'] },
+  { icon: 'spellcheck',        label: 'Spell/Grammar',  keywords: ['uppercase', 'capitaliz', 'autocorrect', 'grammar', 'spell'] },
+  { icon: 'schedule',          label: 'Timezone',       keywords: ['timezone', 'time zone'] },
+  { icon: 'keyboard',          label: 'Keyboard',       keywords: ['keyboard', 'shortcut', 'hotkey', 'keybind'] },
+  { icon: 'gradient',          label: 'Gradient/Color', keywords: ['gradient', 'colour', 'color'] },
+  { icon: 'home',              label: 'Home/Button',    keywords: ['home', 'button', 'icon', 'logo'] },
+  { icon: 'developer_mode',    label: 'DevTools',       keywords: ['devtools', 'inspect', 'console'] },
+  { icon: 'block',             label: 'Block/Hide',     keywords: ['block', 'hide', 'suppress', 'silent'] },
+  { icon: 'swap_vert',         label: 'Scroll',         keywords: ['scroll', 'smooth'] },
+  { icon: 'people',            label: 'Members/Panel',  keywords: ['member', 'panel', 'sidebar'] },
+  { icon: 'build',             label: 'Fix/Patch',      keywords: ['duplicate', 'dupe', 'fix', 'glitch'] },
+  { icon: 'theater_comedy',    label: 'Masquerade',     keywords: ['impersonat', 'masquerade', 'pfp', 'disguise'] },
+  { icon: 'volume_up',         label: 'Sound/SFX',      keywords: ['sound', 'noise', 'sfx'] },
+  { icon: 'bookmark',          label: 'Favourites',     keywords: ['favourites', 'favorites', 'bookmark', 'saved'] },
+  { icon: 'attach_file',       label: 'Attachments',    keywords: ['attach', 'file', 'copy link'] },
+  { icon: 'extension',         label: 'Default',        keywords: ['(fallback — no keywords matched)'] },
+];
+
+let iconRefVisible = false;
+
+function toggleIconRef() {
+  iconRefVisible = !iconRefVisible;
+  document.getElementById('iconRefBody').style.display = iconRefVisible ? 'block' : 'none';
+  document.getElementById('iconRefArrow').style.transform = iconRefVisible ? 'rotate(180deg)' : '';
+  if (iconRefVisible && document.getElementById('iconRefGrid').children.length === 0) {
+    renderIconRef('');
+  }
+}
+
+function renderIconRef(query) {
+  const grid = document.getElementById('iconRefGrid');
+  grid.innerHTML = '';
+  const q = query.toLowerCase();
+  const filtered = ICON_RULES.filter(r =>
+    !q
+    || r.label.toLowerCase().includes(q)
+    || r.keywords.some(k => k.includes(q))
+  );
+  filtered.forEach(rule => {
+    const chip = document.createElement('div');
+    chip.className = 'icon-ref-chip';
+    chip.title = 'Click to copy keyword: ' + rule.keywords[0];
+    chip.innerHTML = `<span class="material-icons-round">${rule.icon}</span><strong>${rule.label}</strong><span class="chip-keywords">${rule.keywords.slice(0,3).join(', ')}</span>`;
+    chip.onclick = () => {
+      const word = rule.keywords[0];
+      navigator.clipboard.writeText(word).catch(() => {});
+      const hint = document.getElementById('copiedHint');
+      document.getElementById('copiedWord').textContent = '"' + word + '"';
+      hint.style.display = 'flex';
+      setTimeout(() => hint.style.display = 'none', 3000);
+    };
+    grid.appendChild(chip);
+  });
+  if (filtered.length === 0) {
+    grid.innerHTML = '<span style="font-size:13px;color:var(--md-sys-color-on-surface-variant);">No icons match that search.</span>';
+  }
+}
+
+function filterIconRef() {
+  renderIconRef(document.getElementById('iconRefSearch').value);
+}
+
+</script>
+
+<script>
+
+(function(){
+
+if(window.__ROLE_MENTION_EXTRACTOR__) return;
+window.__ROLE_MENTION_EXTRACTOR__ = true;
+
+const originalFetch = window.fetch;
+
+window.fetch = async (...args) => {
+    const res = await originalFetch(...args);
+    try {
+        const clone = res.clone();
+        const data = await clone.json();
+        scan(data);
+    } catch {}
+    return res;
+};
+
+function scan(obj){
+    if(!obj) return;
+    if(Array.isArray(obj)){
+        obj.forEach(scan);
+        return;
+    }
+    if(typeof obj === "object"){
+        if(typeof obj.content === "string"){
+            const matches = obj.content.match(/<%[A-Z0-9]+>/g);
+            if(matches){
+                matches.forEach(roleMention=>{
+                    console.log("Role mention found:", `"${roleMention}"`);
+                });
+            }
+        }
+        Object.values(obj).forEach(scan);
+    }
+}
+
+})();
+</script>
+</body>
+</html>
