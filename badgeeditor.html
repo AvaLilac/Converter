@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avia Badge Backend Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Google+Sans+Display:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root {
+    --md-sys-color-primary: #D0BCFF;
+    --md-sys-color-on-primary: #381E72;
+    --md-sys-color-primary-container: #4F378B;
+    --md-sys-color-on-primary-container: #EADDFF;
+    --md-sys-color-secondary: #CCC2DC;
+    --md-sys-color-on-secondary: #332D41;
+    --md-sys-color-secondary-container: #4A4458;
+    --md-sys-color-on-secondary-container: #E8DEF8;
+    --md-sys-color-tertiary: #EFB8C8;
+    --md-sys-color-on-tertiary: #492532;
+    --md-sys-color-tertiary-container: #633B48;
+    --md-sys-color-on-tertiary-container: #FFD8E4;
+    --md-sys-color-error: #F2B8B5;
+    --md-sys-color-on-error: #601410;
+    --md-sys-color-error-container: #8C1D18;
+    --md-sys-color-on-error-container: #F9DEDC;
+    --md-sys-color-background: #141218;
+    --md-sys-color-on-background: #E6E0E9;
+    --md-sys-color-surface: #141218;
+    --md-sys-color-on-surface: #E6E0E9;
+    --md-sys-color-surface-variant: #49454F;
+    --md-sys-color-on-surface-variant: #CAC4D0;
+    --md-sys-color-outline: #938F99;
+    --md-sys-color-outline-variant: #49454F;
+    --md-sys-color-surface-container-lowest: #0F0D13;
+    --md-sys-color-surface-container-low: #1D1B20;
+    --md-sys-color-surface-container: #211F26;
+    --md-sys-color-surface-container-high: #2B2930;
+    --md-sys-color-surface-container-highest: #36343B;
+    --md-sys-color-inverse-surface: #E6E0E9;
+    --md-sys-color-inverse-on-surface: #322F37;
+    --md-sys-color-inverse-primary: #6750A4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Google Sans', sans-serif;
+    background: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    min-height: 100vh;
+  }
+
+  .top-bar {
+    background: var(--md-sys-color-surface-container);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .top-bar .material-icons-round { color: var(--md-sys-color-on-surface-variant); font-size: 24px; }
+  .top-bar h1 {
+    font-family: 'Google Sans Display', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+    flex: 1;
+  }
+  .top-bar .badge {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .layout {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .material-icons-round { font-size: 18px; }
+
+  .url-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .url-input-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .url-input-wrap .material-icons-round {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 20px;
+    pointer-events: none;
+  }
+  .field {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 12px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    padding: 14px 14px 14px 44px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field:focus { border-color: var(--md-sys-color-primary); }
+  .field::placeholder { color: var(--md-sys-color-on-surface-variant); }
+
+  .preset-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 20px;
+    padding: 6px 14px 6px 10px;
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip:hover {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-color: var(--md-sys-color-secondary-container);
+  }
+  .chip .material-icons-round { font-size: 16px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.1px;
+  }
+  .btn .material-icons-round { font-size: 18px; }
+  .btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+  .btn-filled:hover { filter: brightness(1.1); box-shadow: 0 2px 8px rgba(208,188,255,0.3); }
+  .btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+  .btn-tonal:hover { filter: brightness(1.1); }
+  .btn-outlined { background: transparent; border: 1px solid var(--md-sys-color-outline); color: var(--md-sys-color-primary); }
+  .btn-outlined:hover { background: rgba(208,188,255,0.08); }
+  .btn-error { background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); }
+  .btn-error:hover { filter: brightness(1.2); }
+  .btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .search-wrap .material-icons-round {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 20px;
+    pointer-events: none;
+  }
+  #searchInput {
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 28px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px 12px 46px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #searchInput:focus {
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 3px rgba(208,188,255,0.15);
+  }
+  #searchInput::placeholder { color: var(--md-sys-color-on-surface-variant); }
+
+  .count-label {
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    white-space: nowrap;
+  }
+
+  #badgeList { display: flex; flex-direction: column; gap: 10px; }
+
+  .badge-card {
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 16px;
+    overflow: visible;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .badge-card:hover { border-color: var(--md-sys-color-outline); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+  .badge-card.editing { border-color: var(--md-sys-color-primary); }
+
+  .badge-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .badge-icon-bubble {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--md-sys-color-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .badge-meta { flex: 1; overflow: hidden; }
+  .badge-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--md-sys-color-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge-users-preview {
+    font-size: 12px;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 2px;
+  }
+  .badge-actions { display: flex; gap: 4px; align-items: center; }
+  .icon-btn {
+    background: none;
+    border: none;
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: background 0.15s, color 0.15s;
+  }
+  .icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--md-sys-color-on-surface); }
+  .icon-btn.delete:hover { background: rgba(242,184,181,0.12); color: var(--md-sys-color-error); }
+  .icon-btn .material-icons-round { font-size: 20px; }
+  .expand-arrow { transition: transform 0.2s; color: var(--md-sys-color-on-surface-variant); }
+  .expand-arrow.open { transform: rotate(180deg); }
+
+  .badge-body {
+    display: none;
+    padding: 0 16px 16px;
+    flex-direction: column;
+    gap: 14px;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .badge-body.open { display: flex; }
+
+  .field-group { display: flex; flex-direction: column; gap: 4px; }
+  .field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 4px;
+  }
+  .inline-field {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 10px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .inline-field:focus { border-color: var(--md-sys-color-primary); }
+  .inline-field.mono { font-family: 'Roboto Mono', monospace; font-size: 13px; }
+
+  .tooltip-preview-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .tooltip-preview-label {
+    font-size: 11px;
+    color: var(--md-sys-color-on-surface-variant);
+    white-space: nowrap;
+  }
+  .tooltip-preview {
+    display: inline-block;
+    background: black;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.03125rem;
+    line-height: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .color-row { display: flex; gap: 10px; align-items: center; }
+  .color-preview-swatch {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    flex-shrink: 0;
+  }
+  .color-type-tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+  .color-type-tab {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    transition: all 0.15s;
+  }
+  .color-type-tab .material-icons-round { font-size: 14px; }
+  .color-type-tab.active {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-color: var(--md-sys-color-primary-container);
+  }
+  .color-panel { display: none; }
+  .color-panel.active { display: block; }
+
+  .gradient-builder { display: flex; flex-direction: column; gap: 10px; }
+  .gradient-preview-bar {
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    width: 100%;
+  }
+  .gradient-stops { display: flex; flex-direction: column; gap: 6px; }
+  .gradient-stop-row { display: flex; align-items: center; gap: 8px; }
+  .stop-color-input {
+    width: 44px; height: 36px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    background: var(--md-sys-color-surface-container-high);
+    cursor: pointer;
+    padding: 2px;
+    flex-shrink: 0;
+  }
+  .stop-pos-input {
+    width: 70px;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    flex-shrink: 0;
+  }
+  .stop-pos-input:focus { border-color: var(--md-sys-color-primary); }
+  .stop-label { font-size: 12px; color: var(--md-sys-color-on-surface-variant); flex: 1; }
+  .gradient-angle-row { display: flex; align-items: center; gap: 10px; }
+  .gradient-angle-row label { font-size: 12px; color: var(--md-sys-color-on-surface-variant); white-space: nowrap; }
+  .angle-input {
+    width: 70px;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .angle-input:focus { border-color: var(--md-sys-color-primary); }
+  .raw-color-hint {
+    font-size: 11px;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .raw-color-hint code {
+    background: var(--md-sys-color-surface-container-highest);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    color: var(--md-sys-color-primary);
+  }
+
+  .users-list { display: flex; flex-direction: column; gap: 6px; }
+  .user-row { display: flex; gap: 8px; align-items: center; }
+  .user-row .inline-field { flex: 1; }
+  .add-user-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--md-sys-color-surface-container-high);
+    border: 1px dashed var(--md-sys-color-outline);
+    border-radius: 10px;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 13px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 2px;
+  }
+  .add-user-btn:hover {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-color: var(--md-sys-color-secondary-container);
+  }
+  .add-user-btn .material-icons-round { font-size: 16px; }
+
+  #snackbar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    border-radius: 8px;
+    padding: 14px 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    white-space: nowrap;
+  }
+  #snackbar.show { transform: translateX(-50%) translateY(0); }
+  #snackbar .material-icons-round { font-size: 20px; color: var(--md-sys-color-primary); }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--md-sys-color-on-surface-variant);
+    display: none;
+  }
+  .empty-state .material-icons-round { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+  .empty-state p { font-size: 15px; }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(208,188,255,0.3);
+    border-top-color: var(--md-sys-color-primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .method-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .method-tab {
+    flex: 1;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: 'Google Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .method-tab .material-icons-round { font-size: 16px; }
+  .method-tab.active {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-color: var(--md-sys-color-primary-container);
+  }
+  .method-panel { display: none; }
+  .method-panel.active { display: block; }
+
+  .paste-area {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 12px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    padding: 12px 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.2s;
+    line-height: 1.5;
+  }
+  .paste-area:focus { border-color: var(--md-sys-color-primary); }
+  .paste-area::placeholder { color: var(--md-sys-color-on-surface-variant); font-family: 'Google Sans', sans-serif; font-size: 13px; }
+
+  .output-area {
+    width: 100%;
+    background: var(--md-sys-color-surface-container-highest);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 12px;
+    color: var(--md-sys-color-on-surface);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    padding: 12px 14px;
+    outline: none;
+    resize: vertical;
+    min-height: 160px;
+    line-height: 1.5;
+  }
+
+  .highlight { background: rgba(208,188,255,0.2); border-radius: 3px; }
+
+  .icon-emoji-row { display: flex; gap: 8px; align-items: center; }
+  .emoji-preview-bubble {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--md-sys-color-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="material-icons-round">military_tech</span>
+  <h1>Badge Backend Editor</h1>
+  <span class="badge" id="badgeCount">0 badges</span>
+</div>
+
+<div class="layout">
+
+  <div class="card">
+    <div class="card-title">
+      <span class="material-icons-round">cloud_download</span>
+      Load Backend
+    </div>
+    <div class="method-tabs">
+      <button class="method-tab active" id="tab-url" onclick="switchMethod('url')">
+        <span class="material-icons-round">link</span>
+        Load from URL
+      </button>
+      <button class="method-tab" id="tab-paste" onclick="switchMethod('paste')">
+        <span class="material-icons-round">content_paste</span>
+        Paste JS
+      </button>
+    </div>
+
+    <div class="method-panel active" id="panel-url">
+      <div class="url-row">
+        <div class="url-input-wrap">
+          <span class="material-icons-round">link</span>
+          <input class="field" id="urlInput" type="text"
+            placeholder="Paste raw GitHub URL to userbadgesbackend.js..."
+            value="https://raw.githubusercontent.com/AvaLilac/AviaClientBadges/refs/heads/main/userbadgesbackend.js">
+        </div>
+        <div class="spinner" id="spinner"></div>
+        <button class="btn btn-filled" onclick="loadFromURL()">
+          <span class="material-icons-round">download</span>
+          Load
+        </button>
+      </div>
+      <div class="preset-chips">
+        <div class="chip" onclick="setPreset('default')">
+          <span class="material-icons-round">hub</span>
+          AvaLilac Badges (default)
+        </div>
+      </div>
+    </div>
+
+    <div class="method-panel" id="panel-paste">
+      <textarea class="paste-area" id="pasteInput" rows="6"
+        placeholder="Paste the full userbadgesbackend.js content here..."></textarea>
+      <div style="margin-top:10px; display:flex; gap:10px;">
+        <button class="btn btn-filled" onclick="loadFromPaste()">
+          <span class="material-icons-round">upload</span>
+          Load JS
+        </button>
+        <button class="btn btn-outlined" onclick="document.getElementById('pasteInput').value=''">
+          <span class="material-icons-round">clear</span>
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="material-icons-round">search</span>
+        <input id="searchInput" type="text" placeholder="Search badges by name, user, or color..." oninput="applySearch()">
+      </div>
+      <span class="count-label" id="filterCount"></span>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-tonal" onclick="addBadge()">
+        <span class="material-icons-round">add</span>
+        Add Badge
+      </button>
+      <button class="btn btn-error" onclick="deleteAll()">
+        <span class="material-icons-round">delete_sweep</span>
+        Delete All
+      </button>
+      <button class="btn btn-outlined" onclick="expandAll()">
+        <span class="material-icons-round">unfold_more</span>
+        Expand All
+      </button>
+      <button class="btn btn-outlined" onclick="collapseAll()">
+        <span class="material-icons-round">unfold_less</span>
+        Collapse All
+      </button>
+    </div>
+  </div>
+
+  <div id="badgeList"></div>
+  <div class="empty-state" id="emptyState">
+    <div class="material-icons-round">military_tech</div>
+    <p id="emptyMsg">Load a backend URL above to get started, or add badges manually.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="material-icons-round">output</span>
+      Export
+    </div>
+    <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+      <button class="btn btn-filled" onclick="generateAndShow()">
+        <span class="material-icons-round">refresh</span>
+        Generate JS
+      </button>
+      <button class="btn btn-outlined" onclick="copyOutput()">
+        <span class="material-icons-round">content_copy</span>
+        Copy to Clipboard
+      </button>
+    </div>
+    <textarea class="output-area" id="outputArea" readonly placeholder="Click 'Generate JS' to produce the backend file content..."></textarea>
+  </div>
+
+</div>
+
+<div id="snackbar">
+  <span class="material-icons-round">check_circle</span>
+  <span id="snackMsg">Done!</span>
+</div>
+
+<script>
+let badges = [];
+let searchQuery = '';
+let snackTimer = null;
+let gradientStops = {};
+
+const DEFAULT_URL = 'https://raw.githubusercontent.com/AvaLilac/AviaClientBadges/refs/heads/main/userbadgesbackend.js';
+
+function setPreset(key) {
+  if (key === 'default') document.getElementById('urlInput').value = DEFAULT_URL;
+}
+
+function switchMethod(method) {
+  document.getElementById('tab-url').classList.toggle('active', method === 'url');
+  document.getElementById('tab-paste').classList.toggle('active', method === 'paste');
+  document.getElementById('panel-url').classList.toggle('active', method === 'url');
+  document.getElementById('panel-paste').classList.toggle('active', method === 'paste');
+}
+
+function parseJS(text) {
+  const sandbox = { window: {} };
+  try {
+    new Function('window', text)(sandbox.window);
+    if (sandbox.window.AVIA_USER_BADGES && Array.isArray(sandbox.window.AVIA_USER_BADGES)) {
+      return sandbox.window.AVIA_USER_BADGES;
+    }
+  } catch(e) {}
+  const match = text.match(/(?:window\.)?AVIA_USER_BADGES\s*=\s*(\[[\s\S]*?\]);/);
+  if (match) {
+    try { return JSON.parse(match[1]); } catch(e) {}
+  }
+  throw new Error('Could not find AVIA_USER_BADGES array in file');
+}
+
+async function loadFromURL() {
+  let url = document.getElementById('urlInput').value.trim();
+  if (!url) { showSnack('Please enter a URL', 'error'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  url = toRawURL(url);
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = 'block';
+  try {
+    const res = await fetch(url + '?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    badges = parseJS(text);
+    gradientStops = {};
+    renderAll();
+    showSnack('Loaded ' + badges.length + ' badges');
+  } catch(e) {
+    showSnack('Failed: ' + e.message, 'error');
+  } finally {
+    spinner.style.display = 'none';
+  }
+}
+
+function toRawURL(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'github.com') {
+      const parts = u.pathname.replace(/^\//, '').split('/');
+      if (parts[2] === 'blob') {
+        parts.splice(2, 1);
+        return 'https://raw.githubusercontent.com/' + parts.join('/');
+      }
+    }
+  } catch(e) {}
+  return url;
+}
+
+function loadFromPaste() {
+  const raw = document.getElementById('pasteInput').value.trim();
+  if (!raw) { showSnack('Nothing pasted yet', 'error'); return; }
+  try {
+    badges = parseJS(raw);
+    gradientStops = {};
+    renderAll();
+    showSnack('Loaded ' + badges.length + ' badges');
+  } catch(e) {
+    showSnack('Parse error: ' + e.message, 'error');
+  }
+}
+
+function isGradient(color) {
+  return color && /gradient\s*\(/i.test(color);
+}
+
+function applyColorToElement(el, color) {
+  if (!color) {
+    el.style.color = 'white';
+    el.style.background = '';
+    el.style.webkitBackgroundClip = '';
+    el.style.webkitTextFillColor = '';
+  } else if (isGradient(color)) {
+    el.style.background = color;
+    el.style.webkitBackgroundClip = 'text';
+    el.style.webkitTextFillColor = 'transparent';
+    el.style.color = 'transparent';
+  } else {
+    el.style.background = '';
+    el.style.webkitBackgroundClip = '';
+    el.style.webkitTextFillColor = '';
+    el.style.color = color;
+  }
+}
+
+function renderAll() {
+  const q = searchQuery.toLowerCase();
+  const list = document.getElementById('badgeList');
+  const empty = document.getElementById('emptyState');
+  list.innerHTML = '';
+
+  const filtered = badges.filter(b => {
+    if (!q) return true;
+    return (b.name || '').toLowerCase().includes(q)
+      || (b.icon || '').toLowerCase().includes(q)
+      || (b.color || '').toLowerCase().includes(q)
+      || (b.users || []).some(u => u.toLowerCase().includes(q));
+  });
+
+  updateCounts(filtered.length);
+
+  if (filtered.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('emptyMsg').textContent = badges.length === 0
+      ? 'Load a backend URL above to get started, or add badges manually.'
+      : 'No badges match your search.';
+    return;
+  }
+  empty.style.display = 'none';
+  filtered.forEach(badge => {
+    const realIdx = badges.indexOf(badge);
+    list.appendChild(buildCard(badge, realIdx));
+  });
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function hl(text, q) {
+  if (!q || !text) return escHtml(text || '');
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return escHtml(text).replace(re, '<mark class="highlight">$1</mark>');
+}
+
+function detectColorType(color) {
+  if (!color) return 'solid';
+  if (isGradient(color)) return 'gradient';
+  if (color.startsWith('var(')) return 'raw';
+  return 'solid';
+}
+
+function buildCard(badge, idx) {
+  const q = searchQuery.toLowerCase();
+  const usersPreview = (badge.users || []).slice(0, 3).join(', ') + ((badge.users || []).length > 3 ? '…' : '');
+  const colorType = detectColorType(badge.color);
+
+  const card = document.createElement('div');
+  card.className = 'badge-card';
+  card.id = 'card-' + idx;
+
+  card.innerHTML = `
+    <div class="badge-header" onclick="toggleCard(${idx})">
+      <div class="badge-icon-bubble" id="iconbubble-${idx}">${escHtml(badge.icon) || '🏅'}</div>
+      <div class="badge-meta">
+        <div class="badge-name" id="badgename-${idx}">${hl(badge.name || '(no name)', q)}</div>
+        <div class="badge-users-preview" id="userspreview-${idx}">${escHtml(usersPreview) || 'No users'}</div>
+      </div>
+      <div class="badge-actions" onclick="event.stopPropagation()">
+        <button class="icon-btn" title="Move up" onclick="moveBadge(${idx}, -1)">
+          <span class="material-icons-round">arrow_upward</span>
+        </button>
+        <button class="icon-btn" title="Move down" onclick="moveBadge(${idx}, 1)">
+          <span class="material-icons-round">arrow_downward</span>
+        </button>
+        <button class="icon-btn delete" title="Delete" onclick="deleteBadge(${idx})">
+          <span class="material-icons-round">delete</span>
+        </button>
+      </div>
+      <span class="material-icons-round expand-arrow" id="arrow-${idx}">expand_more</span>
+    </div>
+    <div class="badge-body" id="body-${idx}">
+      <div class="field-group">
+        <div class="field-label">Badge Name</div>
+        <input class="inline-field" value="${escHtml(badge.name || '')}" oninput="updateName(${idx}, this.value)" placeholder="e.g. Avia Client Owner">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Icon (emoji)</div>
+        <div class="icon-emoji-row">
+          <div class="emoji-preview-bubble" id="emojibubble-${idx}">${escHtml(badge.icon) || '🏅'}</div>
+          <input class="inline-field" style="flex:1;" value="${escHtml(badge.icon || '')}" oninput="updateIcon(${idx}, this.value)" placeholder="e.g. 👑 😸 💎">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Color</div>
+        <div class="color-type-tabs">
+          <button class="color-type-tab ${colorType==='solid'?'active':''}" id="ctab-solid-${idx}" onclick="setColorType(${idx},'solid')">
+            <span class="material-icons-round">circle</span> Solid
+          </button>
+          <button class="color-type-tab ${colorType==='gradient'?'active':''}" id="ctab-gradient-${idx}" onclick="setColorType(${idx},'gradient')">
+            <span class="material-icons-round">gradient</span> Gradient
+          </button>
+          <button class="color-type-tab ${colorType==='raw'?'active':''}" id="ctab-raw-${idx}" onclick="setColorType(${idx},'raw')">
+            <span class="material-icons-round">code</span> Raw CSS
+          </button>
+        </div>
+
+        <div class="color-panel ${colorType==='solid'?'active':''}" id="cpanel-solid-${idx}">
+          <div class="color-row">
+            <input type="color" class="stop-color-input" id="solidpicker-${idx}"
+              value="${toHexColor(badge.color)}"
+              oninput="updateSolidColor(${idx}, this.value)">
+            <input class="inline-field mono" style="flex:1;" id="solidhex-${idx}"
+              value="${escHtml(badge.color || '#ffffff')}"
+              oninput="updateSolidColorHex(${idx}, this.value)"
+              placeholder="#ff66cc">
+            <div class="color-preview-swatch" id="swatch-${idx}" style="background:${escHtml(badge.color || '#ffffff')};"></div>
+          </div>
+        </div>
+
+        <div class="color-panel ${colorType==='gradient'?'active':''}" id="cpanel-gradient-${idx}">
+          <div class="gradient-builder" id="gradbuilder-${idx}">
+            <div class="gradient-angle-row">
+              <label>Angle</label>
+              <input type="number" class="angle-input" id="gradangle-${idx}" min="0" max="360"
+                value="${parseGradientAngle(badge.color)}"
+                oninput="rebuildGradient(${idx})">
+              <span style="font-size:12px;color:var(--md-sys-color-on-surface-variant);">deg</span>
+            </div>
+            <div id="gradstops-${idx}" class="gradient-stops"></div>
+            <div style="display:flex;gap:8px;">
+              <button class="add-user-btn" onclick="addGradientStop(${idx})">
+                <span class="material-icons-round">add</span> Add stop
+              </button>
+            </div>
+            <div class="gradient-preview-bar" id="gradpreview-${idx}" style="background:${isGradient(badge.color)?escHtml(badge.color):'linear-gradient(90deg,#ffffff,#D0BCFF)'};"></div>
+          </div>
+        </div>
+
+        <div class="color-panel ${colorType==='raw'?'active':''}" id="cpanel-raw-${idx}">
+          <input class="inline-field mono" id="rawcolorinput-${idx}"
+            value="${escHtml(badge.color || '')}"
+            oninput="updateRawColor(${idx}, this.value)"
+            placeholder="var(--md-sys-color-primary) or any CSS value">
+          <p class="raw-color-hint">Accepts any CSS color value: <code>var(--md-sys-color-primary)</code>, <code>hsl(270,60%,70%)</code>, etc.</p>
+        </div>
+
+        <div class="tooltip-preview-wrap">
+          <span class="tooltip-preview-label">Tooltip preview:</span>
+          <span class="tooltip-preview" id="tooltippreview-${idx}"></span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Users (one per line, a user can hold multiple badges by appearing in multiple badge entries)</div>
+        <div class="users-list" id="userslist-${idx}"></div>
+        <button class="add-user-btn" onclick="addUser(${idx})">
+          <span class="material-icons-round">person_add</span> Add user
+        </button>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+function afterRenderCard(idx) {
+  renderGradientStops(idx);
+  renderUsersList(idx);
+  updateTooltipPreview(idx);
+}
+
+function updateTooltipPreview(idx) {
+  const el = document.getElementById('tooltippreview-' + idx);
+  if (!el) return;
+  const badge = badges[idx];
+  el.textContent = badge.name || '(no name)';
+  applyColorToElement(el, badge.color);
+}
+
+function renderGradientStops(idx) {
+  const badge = badges[idx];
+  const container = document.getElementById('gradstops-' + idx);
+  if (!container) return;
+  container.innerHTML = '';
+  const stops = getOrInitStops(idx);
+  stops.forEach((stop, si) => {
+    const row = document.createElement('div');
+    row.className = 'gradient-stop-row';
+    row.innerHTML = `
+      <input type="color" class="stop-color-input" value="${toHexFromRgbOrHex(stop.color)}"
+        oninput="updateStop(${idx},${si},'color',this.value); updateStopHex(${idx},${si},this.value)">
+      <input class="inline-field mono" style="flex:1;" value="${escHtml(stop.color)}" id="stophex-${idx}-${si}"
+        oninput="updateStop(${idx},${si},'color',this.value)">
+      <input type="number" class="stop-pos-input" value="${stop.pos !== null ? stop.pos : ''}" min="0" max="100"
+        oninput="updateStop(${idx},${si},'pos',this.value+'%')" placeholder="50">
+      <span class="stop-label">%</span>
+      <button class="icon-btn delete" onclick="removeStop(${idx},${si})" title="Remove stop">
+        <span class="material-icons-round">close</span>
+      </button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function renderUsersList(idx) {
+  const badge = badges[idx];
+  const container = document.getElementById('userslist-' + idx);
+  if (!container) return;
+  container.innerHTML = '';
+  (badge.users || []).forEach((user, ui) => {
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    row.innerHTML = `
+      <input class="inline-field" value="${escHtml(user)}" placeholder="Username#0000"
+        oninput="updateUser(${idx},${ui},this.value)">
+      <button class="icon-btn delete" onclick="removeUser(${idx},${ui})" title="Remove user">
+        <span class="material-icons-round">close</span>
+      </button>
+    `;
+    container.appendChild(row);
+  });
+  updateUsersPreview(idx);
+}
+
+function updateUsersPreview(idx) {
+  const badge = badges[idx];
+  const el = document.getElementById('userspreview-' + idx);
+  if (!el) return;
+  const users = badge.users || [];
+  el.textContent = users.length ? users.slice(0,3).join(', ') + (users.length > 3 ? '…' : '') : 'No users';
+}
+
+function toggleCard(idx) {
+  const body = document.getElementById('body-' + idx);
+  const arrow = document.getElementById('arrow-' + idx);
+  const card = document.getElementById('card-' + idx);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+  card.classList.toggle('editing', !isOpen);
+  if (!isOpen) afterRenderCard(idx);
+}
+
+function expandAll() {
+  badges.forEach((_, idx) => {
+    const body = document.getElementById('body-' + idx);
+    if (body && !body.classList.contains('open')) {
+      body.classList.add('open');
+      document.getElementById('arrow-' + idx)?.classList.add('open');
+      document.getElementById('card-' + idx)?.classList.add('editing');
+      afterRenderCard(idx);
+    }
+  });
+}
+
+function collapseAll() {
+  document.querySelectorAll('.badge-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.expand-arrow').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.badge-card').forEach(c => c.classList.remove('editing'));
+}
+
+function updateName(idx, value) {
+  badges[idx].name = value;
+  const el = document.getElementById('badgename-' + idx);
+  if (el) el.innerHTML = hl(value || '(no name)', searchQuery.toLowerCase());
+  updateTooltipPreview(idx);
+}
+
+function updateIcon(idx, value) {
+  badges[idx].icon = value;
+  const b1 = document.getElementById('iconbubble-' + idx);
+  const b2 = document.getElementById('emojibubble-' + idx);
+  if (b1) b1.textContent = value || '🏅';
+  if (b2) b2.textContent = value || '🏅';
+}
+
+function setColorType(idx, type) {
+  ['solid','gradient','raw'].forEach(t => {
+    document.getElementById('ctab-' + t + '-' + idx)?.classList.toggle('active', t === type);
+    document.getElementById('cpanel-' + t + '-' + idx)?.classList.toggle('active', t === type);
+  });
+  if (type === 'solid') {
+    const hex = toHexColor(badges[idx].color) || '#ffffff';
+    badges[idx].color = hex;
+    const picker = document.getElementById('solidpicker-' + idx);
+    const hexInput = document.getElementById('solidhex-' + idx);
+    if (picker) picker.value = hex;
+    if (hexInput) hexInput.value = hex;
+    updateSwatch(idx, hex);
+  } else if (type === 'gradient') {
+    if (!isGradient(badges[idx].color)) {
+      badges[idx].color = 'linear-gradient(90deg, #ffffff 0%, #D0BCFF 100%)';
+      gradientStops[idx] = null;
+    }
+    renderGradientStops(idx);
+    updateGradientPreview(idx);
+  } else if (type === 'raw') {
+    const input = document.getElementById('rawcolorinput-' + idx);
+    if (input) input.value = badges[idx].color || '';
+  }
+  updateTooltipPreview(idx);
+}
+
+function updateSolidColor(idx, hex) {
+  badges[idx].color = hex;
+  const hexInput = document.getElementById('solidhex-' + idx);
+  if (hexInput) hexInput.value = hex;
+  updateSwatch(idx, hex);
+  updateTooltipPreview(idx);
+}
+
+function updateSolidColorHex(idx, value) {
+  badges[idx].color = value;
+  const picker = document.getElementById('solidpicker-' + idx);
+  if (picker && /^#[0-9a-fA-F]{6}$/.test(value)) picker.value = value;
+  updateSwatch(idx, value);
+  updateTooltipPreview(idx);
+}
+
+function updateSwatch(idx, color) {
+  const swatch = document.getElementById('swatch-' + idx);
+  if (swatch) swatch.style.background = color;
+}
+
+function updateRawColor(idx, value) {
+  badges[idx].color = value;
+  updateTooltipPreview(idx);
+}
+
+function parseGradientAngle(color) {
+  if (!color) return 90;
+  const m = color.match(/linear-gradient\(\s*(\d+)deg/);
+  return m ? parseInt(m[1]) : 90;
+}
+
+function parseGradientStops(color) {
+  if (!color || !isGradient(color)) {
+    return [{ color: '#ffffff', pos: 0 }, { color: '#D0BCFF', pos: 100 }];
+  }
+  const inner = color.replace(/^linear-gradient\(\s*\d+deg\s*,\s*/, '').replace(/\)\s*$/, '');
+  const parts = inner.split(/,\s*(?=(?:[^()]*\([^()]*\))*[^()]*$)/);
+  const stops = [];
+  parts.forEach(part => {
+    part = part.trim();
+    const m = part.match(/^((?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|[a-zA-Z]+))\s*(\d+(?:\.\d+)?)%?$/);
+    if (m) {
+      stops.push({ color: m[1].trim(), pos: parseFloat(m[2]) });
+    } else {
+      const m2 = part.match(/^((?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|[a-zA-Z]+))\s*$/);
+      if (m2) stops.push({ color: m2[1].trim(), pos: null });
+    }
+  });
+  return stops.length >= 2 ? stops : [{ color: '#ffffff', pos: 0 }, { color: '#D0BCFF', pos: 100 }];
+}
+
+function getOrInitStops(idx) {
+  if (!gradientStops[idx]) {
+    gradientStops[idx] = parseGradientStops(badges[idx].color);
+  }
+  return gradientStops[idx];
+}
+
+function updateStop(idx, si, field, value) {
+  const stops = getOrInitStops(idx);
+  if (field === 'color') stops[si].color = value;
+  if (field === 'pos') stops[si].pos = parseFloat(value);
+  rebuildGradientFromStops(idx);
+}
+
+function updateStopHex(idx, si, hexValue) {
+  const el = document.getElementById('stophex-' + idx + '-' + si);
+  if (el) el.value = hexValue;
+}
+
+function removeStop(idx, si) {
+  const stops = getOrInitStops(idx);
+  if (stops.length <= 2) { showSnack('Need at least 2 stops', 'error'); return; }
+  stops.splice(si, 1);
+  rebuildGradientFromStops(idx);
+  renderGradientStops(idx);
+}
+
+function addGradientStop(idx) {
+  const stops = getOrInitStops(idx);
+  stops.push({ color: '#888888', pos: 50 });
+  rebuildGradientFromStops(idx);
+  renderGradientStops(idx);
+}
+
+function rebuildGradient(idx) {
+  rebuildGradientFromStops(idx);
+}
+
+function rebuildGradientFromStops(idx) {
+  const stops = getOrInitStops(idx);
+  const angleEl = document.getElementById('gradangle-' + idx);
+  const angle = angleEl ? parseInt(angleEl.value) || 90 : 90;
+  const stopStr = stops.map(s => {
+    const pos = s.pos !== null && s.pos !== undefined ? ' ' + Math.round(s.pos) + '%' : '';
+    return s.color + pos;
+  }).join(', ');
+  const grad = 'linear-gradient(' + angle + 'deg, ' + stopStr + ')';
+  badges[idx].color = grad;
+  updateGradientPreview(idx);
+  updateTooltipPreview(idx);
+}
+
+function updateGradientPreview(idx) {
+  const el = document.getElementById('gradpreview-' + idx);
+  if (el) el.style.background = badges[idx].color;
+}
+
+function toHexColor(color) {
+  if (!color) return '#ffffff';
+  if (/^#[0-9a-fA-F]{6}$/.test(color)) return color;
+  if (/^#[0-9a-fA-F]{3}$/.test(color)) {
+    return '#' + color[1]+color[1]+color[2]+color[2]+color[3]+color[3];
+  }
+  return '#ffffff';
+}
+
+function toHexFromRgbOrHex(color) {
+  if (!color) return '#ffffff';
+  if (/^#[0-9a-fA-F]{6}$/.test(color)) return color;
+  const m = color.match(/rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
+  if (m) {
+    return '#' + [m[1],m[2],m[3]].map(n => parseInt(n).toString(16).padStart(2,'0')).join('');
+  }
+  return '#ffffff';
+}
+
+function addUser(idx) {
+  if (!badges[idx].users) badges[idx].users = [];
+  badges[idx].users.push('');
+  renderUsersList(idx);
+}
+
+function removeUser(idx, ui) {
+  badges[idx].users.splice(ui, 1);
+  renderUsersList(idx);
+}
+
+function updateUser(idx, ui, value) {
+  badges[idx].users[ui] = value;
+  updateUsersPreview(idx);
+}
+
+function addBadge() {
+  badges.push({ name: '', icon: '🏅', color: '#ffffff', users: [] });
+  renderAll();
+  const newIdx = badges.length - 1;
+  setTimeout(() => {
+    toggleCard(newIdx);
+    document.getElementById('card-' + newIdx)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+}
+
+function deleteBadge(idx) {
+  const name = badges[idx].name || 'this badge';
+  if (!confirm('Delete "' + name + '"?')) return;
+  delete gradientStops[idx];
+  badges.splice(idx, 1);
+  gradientStops = {};
+  renderAll();
+  showSnack('Deleted "' + name + '"');
+}
+
+function moveBadge(idx, dir) {
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= badges.length) return;
+  [badges[idx], badges[newIdx]] = [badges[newIdx], badges[idx]];
+  gradientStops = {};
+  renderAll();
+}
+
+function deleteAll() {
+  if (badges.length === 0) { showSnack('No badges to delete', 'error'); return; }
+  if (!confirm('Delete all ' + badges.length + ' badges?')) return;
+  badges = [];
+  gradientStops = {};
+  renderAll();
+  showSnack('All badges deleted');
+}
+
+function applySearch() {
+  searchQuery = document.getElementById('searchInput').value;
+  renderAll();
+}
+
+function updateCounts(filtered) {
+  const total = badges.length;
+  document.getElementById('badgeCount').textContent = total === 1 ? '1 badge' : total + ' badges';
+  const fc = document.getElementById('filterCount');
+  if (searchQuery && filtered !== total) {
+    fc.textContent = 'Showing ' + filtered + ' of ' + total;
+  } else {
+    fc.textContent = total > 0 ? total + ' badges loaded' : '';
+  }
+}
+
+function generateJS() {
+  return 'window.AVIA_USER_BADGES = ' + JSON.stringify(badges, null, 4) + ';\n';
+}
+
+function generateAndShow() {
+  document.getElementById('outputArea').value = generateJS();
+  showSnack('JS generated');
+}
+
+async function copyOutput() {
+  const text = generateJS();
+  try {
+    await navigator.clipboard.writeText(text);
+    showSnack('Copied to clipboard!');
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showSnack('Copied to clipboard!');
+  }
+  document.getElementById('outputArea').value = text;
+}
+
+function showSnack(msg, type) {
+  const snack = document.getElementById('snackbar');
+  const icon = snack.querySelector('.material-icons-round');
+  document.getElementById('snackMsg').textContent = msg;
+  icon.textContent = type === 'error' ? 'error' : 'check_circle';
+  icon.style.color = type === 'error' ? 'var(--md-sys-color-error)' : 'var(--md-sys-color-primary)';
+  snack.classList.add('show');
+  clearTimeout(snackTimer);
+  snackTimer = setTimeout(() => snack.classList.remove('show'), 3000);
+}
+
+renderAll();
+</script>
+</body>
+</html>
