@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AviaClient What's New Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Google+Sans+Display:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+:root {
+  --md-sys-color-primary: #D0BCFF;
+  --md-sys-color-on-primary: #381E72;
+  --md-sys-color-primary-container: #4F378B;
+  --md-sys-color-on-primary-container: #EADDFF;
+  --md-sys-color-secondary: #CCC2DC;
+  --md-sys-color-on-secondary: #332D41;
+  --md-sys-color-secondary-container: #4A4458;
+  --md-sys-color-on-secondary-container: #E8DEF8;
+  --md-sys-color-error: #F2B8B5;
+  --md-sys-color-error-container: #8C1D18;
+  --md-sys-color-on-error-container: #F9DEDC;
+  --md-sys-color-background: #141218;
+  --md-sys-color-on-background: #E6E0E9;
+  --md-sys-color-surface: #141218;
+  --md-sys-color-on-surface: #E6E0E9;
+  --md-sys-color-on-surface-variant: #CAC4D0;
+  --md-sys-color-outline: #938F99;
+  --md-sys-color-outline-variant: #49454F;
+  --md-sys-color-surface-container-lowest: #0F0D13;
+  --md-sys-color-surface-container-low: #1D1B20;
+  --md-sys-color-surface-container: #211F26;
+  --md-sys-color-surface-container-high: #2B2930;
+  --md-sys-color-surface-container-highest: #36343B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Google Sans', sans-serif;
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.top-bar {
+  background: var(--md-sys-color-surface-container);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  height: 60px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  z-index: 10;
+}
+.top-bar-logo { display: flex; align-items: center; gap: 10px; }
+.top-bar-logo .material-icons-round { color: var(--md-sys-color-primary); font-size: 22px; }
+.top-bar h1 {
+  font-family: 'Google Sans Display', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+.top-bar-spacer { flex: 1; }
+.top-bar-actions { display: flex; gap: 8px; align-items: center; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 20px;
+  font-family: 'Google Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn .material-icons-round { font-size: 16px; }
+.btn-filled { background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.btn-filled:hover { filter: brightness(1.1); box-shadow: 0 2px 8px rgba(208,188,255,0.3); }
+.btn-tonal { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.btn-tonal:hover { filter: brightness(1.1); }
+.btn-outlined { background: transparent; border: 1px solid var(--md-sys-color-outline); color: var(--md-sys-color-primary); }
+.btn-outlined:hover { background: rgba(208,188,255,0.08); }
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(208,188,255,0.3);
+  border-top-color: var(--md-sys-color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.main { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+.editor-panel {
+  width: 50%;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  overflow: hidden;
+}
+.editor-header {
+  background: var(--md-sys-color-surface-container-low);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.editor-header-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--md-sys-color-primary);
+  flex: 1;
+}
+.editor-header .material-icons-round { font-size: 16px; color: var(--md-sys-color-primary); }
+.editor-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+.date-row .material-icons-round { font-size: 18px; color: var(--md-sys-color-on-surface-variant); }
+.date-row label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+}
+.date-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--md-sys-color-on-surface);
+  font-family: 'Google Sans', sans-serif;
+  font-size: 14px;
+}
+.date-input::placeholder { color: var(--md-sys-color-on-surface-variant); }
+.block-list { display: flex; flex-direction: column; gap: 8px; }
+.block-card {
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 12px;
+  overflow: hidden;
+  animation: blockIn 0.15s ease;
+}
+@keyframes blockIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.block-card:hover { border-color: var(--md-sys-color-outline); }
+.block-card.dragging { opacity: 0.4; }
+.block-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  gap: 8px;
+  background: var(--md-sys-color-surface-container-high);
+  cursor: grab;
+  user-select: none;
+}
+.block-header:active { cursor: grabbing; }
+.block-type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  flex-shrink: 0;
+}
+.block-type-badge.type-h1 { background: #1a3a5c; color: #90caf9; }
+.block-type-badge.type-h2 { background: #1a3a4a; color: #80deea; }
+.block-type-badge.type-h3 { background: #1a3a3a; color: #80cbc4; }
+.block-type-badge.type-paragraph { background: #2a2a3a; color: #b0bec5; }
+.block-type-badge.type-ul { background: #2a3a2a; color: #a5d6a7; }
+.block-type-badge.type-ol { background: #2a3a2a; color: #c5e1a5; }
+.block-type-badge.type-image { background: #3a2a3a; color: #ce93d8; }
+.block-type-badge.type-hr { background: #2a2a2a; color: #90a4ae; }
+.block-type-badge.type-spacer { background: #2a2a2a; color: #78909c; }
+.block-type-badge.type-blockquote { background: #3a2a1a; color: #ffcc80; }
+.block-preview-text {
+  flex: 1;
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.block-actions { display: flex; gap: 2px; }
+.icon-btn {
+  background: none;
+  border: none;
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background 0.15s, color 0.15s;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--md-sys-color-on-surface); }
+.icon-btn.delete:hover { background: rgba(242,184,181,0.12); color: var(--md-sys-color-error); }
+.icon-btn .material-icons-round { font-size: 16px; }
+.block-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; }
+.field-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 2px;
+}
+.inline-field {
+  width: 100%;
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 8px;
+  color: var(--md-sys-color-on-surface);
+  font-family: 'Google Sans', sans-serif;
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+.inline-field:focus { border-color: var(--md-sys-color-primary); }
+.inline-field::placeholder { color: var(--md-sys-color-on-surface-variant); }
+.inline-field.mono { font-family: 'Roboto Mono', monospace; font-size: 12px; }
+.list-items { display: flex; flex-direction: column; gap: 6px; }
+.list-item-row { display: flex; gap: 6px; align-items: flex-start; }
+.list-item-row .drag-handle {
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: grab;
+  padding: 8px 4px 0;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.list-item-row textarea { flex: 1; min-height: 36px; }
+.add-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px dashed var(--md-sys-color-outline-variant);
+  border-radius: 8px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: 'Google Sans', sans-serif;
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+}
+.add-item-btn:hover {
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+  background: rgba(208,188,255,0.05);
+}
+.add-item-btn .material-icons-round { font-size: 14px; }
+.add-block-section {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container-low);
+}
+.add-block-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 8px;
+}
+.add-block-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.add-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Google Sans', sans-serif;
+}
+.add-chip:hover {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-color: var(--md-sys-color-primary-container);
+}
+.add-chip .material-icons-round { font-size: 14px; }
+.preview-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--md-sys-color-surface-container-lowest);
+}
+.preview-header {
+  background: var(--md-sys-color-surface-container-low);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.preview-header-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--md-sys-color-on-surface-variant);
+  flex: 1;
+}
+.preview-header .material-icons-round { font-size: 16px; color: var(--md-sys-color-on-surface-variant); }
+.preview-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 24px;
+}
+.preview-modal-wrap { width: 100%; max-width: 560px; }
+.preview-modal {
+  padding: 24px;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  color: var(--md-sys-color-on-surface);
+  background: var(--md-sys-color-surface-container-high);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.pm-title {
+  line-height: 2rem;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 16px;
+  color: var(--md-sys-color-on-surface);
+}
+.pm-body { color: var(--md-sys-color-on-surface-variant); line-height: 1.25rem; font-size: 0.875rem; font-weight: 400; }
+.pm-inner { display: flex; flex-direction: column; gap: 0; }
+.pm-date { display: block; margin-bottom: 12px; font-size: 0.875rem; color: var(--md-sys-color-on-surface-variant); opacity: 0.7; }
+.pm-h1 { font-size: 2em; font-weight: 600; margin: 0 0 4px 0; color: var(--md-sys-color-on-surface); }
+.pm-h2 { font-size: 1.6em; font-weight: 600; margin: 0 0 4px 0; color: var(--md-sys-color-on-surface); }
+.pm-h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 4px 0; color: var(--md-sys-color-on-surface); }
+.pm-p { margin: 0; line-height: 1.6; }
+.pm-spacer { display: block; height: 0.75em; }
+.pm-img { max-width: 100%; height: auto; border-radius: 12px; display: block; }
+.pm-ul { padding-left: 1.5em; margin: 0; }
+.pm-ul li { list-style-type: disc; margin-bottom: 4px; line-height: 1.5; }
+.pm-ol { padding-left: 1.5em; margin: 0; }
+.pm-ol li { list-style-type: decimal; margin-bottom: 4px; line-height: 1.5; }
+.pm-hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 4px 0; }
+.pm-code { font-family: monospace; font-size: 0.85em; background: #0d1117; color: #c9d1d9; padding: 1px 4px; border-radius: 4px; }
+.pm-blockquote { border-left: 3px solid rgba(255,255,255,0.2); margin: 0; padding: 4px 12px; color: rgba(255,255,255,0.5); font-style: italic; }
+.pm-footer { display: flex; justify-content: flex-end; margin-top: 24px; }
+.pm-close-btn {
+  line-height: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  color: var(--md-sys-color-primary);
+  background: transparent;
+  height: 40px;
+  border-radius: 9999px;
+  font-family: 'Google Sans', sans-serif;
+  opacity: 0.6;
+}
+
+#backendModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+#backendModal.open { display: flex; }
+.backend-modal-card {
+  background: var(--md-sys-color-surface-container-high);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 760px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.7);
+  overflow: hidden;
+}
+.backend-modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.backend-modal-header .material-icons-round { color: var(--md-sys-color-primary); font-size: 22px; }
+.backend-modal-title { font-size: 18px; font-weight: 600; color: var(--md-sys-color-on-surface); flex: 1; }
+.backend-modal-close {
+  background: none;
+  border: none;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background 0.15s;
+}
+.backend-modal-close:hover { background: rgba(255,255,255,0.08); color: var(--md-sys-color-on-surface); }
+.backend-modal-close .material-icons-round { font-size: 20px; }
+.backend-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+  min-height: 0;
+}
+.backend-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+}
+.backend-col:last-child { border-right: none; }
+.backend-col-header {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  flex-shrink: 0;
+  background: var(--md-sys-color-surface-container);
+}
+.backend-col-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.backend-col-title .material-icons-round { font-size: 14px; }
+.backend-col-sub {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+  font-family: 'Roboto Mono', monospace;
+}
+.backend-col-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.backend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  background: var(--md-sys-color-surface-container);
+}
+.backend-item:hover {
+  background: var(--md-sys-color-surface-container-highest);
+  border-color: var(--md-sys-color-outline-variant);
+}
+.backend-item.latest {
+  border-color: var(--md-sys-color-primary-container);
+  background: rgba(79,55,139,0.25);
+}
+.backend-item.latest:hover { background: rgba(79,55,139,0.4); }
+.backend-item-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--md-sys-color-surface-container-high);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.backend-item-icon .material-icons-round { font-size: 16px; color: var(--md-sys-color-on-surface-variant); }
+.backend-item.latest .backend-item-icon { background: var(--md-sys-color-primary-container); }
+.backend-item.latest .backend-item-icon .material-icons-round { color: var(--md-sys-color-on-primary-container); }
+.backend-item-info { flex: 1; min-width: 0; }
+.backend-item-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.backend-item-meta {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: 'Roboto Mono', monospace;
+  margin-top: 1px;
+}
+.backend-item-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  flex-shrink: 0;
+}
+.backend-col-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 32px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 13px;
+}
+.backend-col-loading .col-spinner {
+  width: 24px; height: 24px;
+  border: 2px solid rgba(208,188,255,0.2);
+  border-top-color: var(--md-sys-color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.backend-col-error {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  color: var(--md-sys-color-error);
+  font-size: 12px;
+  text-align: center;
+}
+.backend-col-error .material-icons-round { font-size: 28px; opacity: 0.7; }
+.backend-modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#snackbar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-surface);
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.2,0,0,1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  white-space: nowrap;
+}
+#snackbar.show { transform: translateX(-50%) translateY(0); }
+#snackbar .material-icons-round { font-size: 18px; color: var(--md-sys-color-primary); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--md-sys-color-outline-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--md-sys-color-outline); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">
+    <span class="material-icons-round">campaign</span>
+    <h1>What's New Editor</h1>
+  </div>
+  <div class="top-bar-spacer"></div>
+  <div class="top-bar-actions">
+    <div class="spinner" id="spinner"></div>
+    <button class="btn btn-outlined" onclick="openBackendModal()">
+      <span class="material-icons-round">cloud_download</span>
+      Load Backend
+    </button>
+    <button class="btn btn-outlined" onclick="loadFile()">
+      <span class="material-icons-round">upload_file</span>
+      Load File
+    </button>
+    <button class="btn btn-filled" onclick="copyJSON()">
+      <span class="material-icons-round">content_copy</span>
+      Copy JSON
+    </button>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFileLoad(event)">
+
+<div id="backendModal" onclick="backendModalBackdropClick(event)">
+  <div class="backend-modal-card">
+    <div class="backend-modal-header">
+      <span class="material-icons-round">hub</span>
+      <span class="backend-modal-title">Select Backend</span>
+      <button class="backend-modal-close" onclick="closeBackendModal()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+    <div class="backend-cols">
+
+      <div class="backend-col" id="col-ava">
+        <div class="backend-col-header">
+          <div class="backend-col-title">
+            <span class="material-icons-round">person</span>
+            Avia Client
+          </div>
+          <div class="backend-col-sub">Whats New</div>
+        </div>
+        <div class="backend-col-loading" id="loading-ava">
+          <div class="col-spinner"></div>
+          <span>Loading backends...</span>
+        </div>
+        <div class="backend-col-scroll" id="list-ava" style="display:none"></div>
+        <div class="backend-col-error" id="error-ava" style="display:none">
+          <span class="material-icons-round">error_outline</span>
+          <span id="error-ava-msg">Failed to load</span>
+        </div>
+      </div>
+
+      <div class="backend-col" id="col-0simp">
+        <div class="backend-col-header">
+          <div class="backend-col-title">
+            <span class="material-icons-round">phone_android</span>
+            Avia Client Mobile
+          </div>
+          <div class="backend-col-sub">Whats New</div>
+        </div>
+        <div class="backend-col-loading" id="loading-0simp">
+          <div class="col-spinner"></div>
+          <span>Loading backends...</span>
+        </div>
+        <div class="backend-col-scroll" id="list-0simp" style="display:none"></div>
+        <div class="backend-col-error" id="error-0simp" style="display:none">
+          <span class="material-icons-round">error_outline</span>
+          <span id="error-0simp-msg">Failed to load</span>
+        </div>
+      </div>
+    </div>
+    <div class="backend-modal-footer">
+      <button class="btn btn-outlined" onclick="closeBackendModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="editor-panel">
+    <div class="editor-header">
+      <span class="material-icons-round">edit</span>
+      <span class="editor-header-title">Editor</span>
+      <span style="font-size:11px;color:var(--md-sys-color-on-surface-variant);">Drag to reorder blocks</span>
+    </div>
+    <div class="editor-scroll" id="editorScroll">
+      <div class="date-row">
+        <span class="material-icons-round">calendar_today</span>
+        <label for="dateInput">Date</label>
+        <input class="date-input" id="dateInput" type="text" placeholder="e.g. May 25, 2026" oninput="schedulePreview()">
+<script>
+document.getElementById('dateInput').value = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+</script>
+      </div>
+      <div class="block-list" id="blockList"></div>
+    </div>
+    <div class="add-block-section">
+      <div class="add-block-label">Add block</div>
+      <div class="add-block-chips">
+        <button class="add-chip" onclick="addBlock('h1')"><span class="material-icons-round">title</span>H1</button>
+        <button class="add-chip" onclick="addBlock('h2')"><span class="material-icons-round">title</span>H2</button>
+        <button class="add-chip" onclick="addBlock('h3')"><span class="material-icons-round">title</span>H3</button>
+        <button class="add-chip" onclick="addBlock('paragraph')"><span class="material-icons-round">notes</span>Paragraph</button>
+        <button class="add-chip" onclick="addBlock('ul')"><span class="material-icons-round">format_list_bulleted</span>Bullet List</button>
+        <button class="add-chip" onclick="addBlock('ol')"><span class="material-icons-round">format_list_numbered</span>Numbered List</button>
+        <button class="add-chip" onclick="addBlock('image')"><span class="material-icons-round">image</span>Image</button>
+        <button class="add-chip" onclick="addBlock('blockquote')"><span class="material-icons-round">format_quote</span>Quote</button>
+        <button class="add-chip" onclick="addBlock('hr')"><span class="material-icons-round">horizontal_rule</span>Divider</button>
+        <button class="add-chip" onclick="addBlock('spacer')"><span class="material-icons-round">space_bar</span>Spacer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-panel">
+    <div class="preview-header">
+      <span class="material-icons-round">visibility</span>
+      <span class="preview-header-title">Live Preview</span>
+    </div>
+    <div class="preview-scroll">
+      <div class="preview-modal-wrap">
+        <div class="preview-modal">
+          <span class="pm-title">What's new</span>
+          <div class="pm-body">
+            <div class="pm-inner" id="previewInner">
+              <span class="pm-date" id="previewDate"></span>
+            </div>
+          </div>
+          <div class="pm-footer">
+            <button class="pm-close-btn">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="snackbar">
+  <span class="material-icons-round">check_circle</span>
+  <span id="snackMsg">Done!</span>
+</div>
+
+<script>
+let blocks = [];
+let dragSrcIdx = null;
+let previewTimer = null;
+let snackTimer = null;
+
+function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+const REPOS = [
+  {
+    id: 'ava',
+    owner: 'AvaLilac',
+    repo: 'aviaclient-backend-whatsnew'
+  },
+  {
+    id: '0simp',
+    owner: '0simp',
+    repo: 'AviaClientMobileWhatsnew'
+  }
+];
+
+async function openBackendModal() {
+  document.getElementById('backendModal').classList.add('open');
+  REPOS.forEach(r => fetchRepoFiles(r));
+}
+
+function closeBackendModal() {
+  document.getElementById('backendModal').classList.remove('open');
+}
+
+function backendModalBackdropClick(e) {
+  if (e.target === document.getElementById('backendModal')) closeBackendModal();
+}
+
+async function fetchRepoFiles(repoInfo) {
+  const { id, owner, repo } = repoInfo;
+  const loadingEl = document.getElementById('loading-' + id);
+  const listEl    = document.getElementById('list-' + id);
+  const errorEl   = document.getElementById('error-' + id);
+  const errorMsg  = document.getElementById('error-' + id + '-msg');
+
+  loadingEl.style.display = 'flex';
+  listEl.style.display    = 'none';
+  errorEl.style.display   = 'none';
+
+  try {
+    const apiUrl = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents';
+    const res = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+    if (!res.ok) {
+      if (res.status === 404) throw new Error('Repo not found or private');
+      if (res.status === 403 || res.status === 429) throw new Error('GitHub rate limited, try again soon');
+      throw new Error('GitHub API error ' + res.status);
+    }
+    const files = await res.json();
+    const jsonFiles = files
+      .filter(f => f.type === 'file' && f.name.endsWith('.json'))
+      .sort((a, b) => b.name.localeCompare(a.name));
+
+    if (!jsonFiles.length) {
+      throw new Error('No .json files found in this repo');
+    }
+
+    listEl.innerHTML = '';
+    jsonFiles.forEach((file, idx) => {
+      const isLatest = idx === 0;
+      const item = document.createElement('div');
+      item.className = 'backend-item' + (isLatest ? ' latest' : '');
+      item.innerHTML =
+        '<div class="backend-item-icon"><span class="material-icons-round">description</span></div>' +
+        '<div class="backend-item-info">' +
+          '<div class="backend-item-name">' + escHtml(file.name) + '</div>' +
+          '<div class="backend-item-meta">' + (file.size ? (file.size / 1024).toFixed(1) + ' KB' : '') + '</div>' +
+        '</div>' +
+        (isLatest ? '<span class="backend-item-badge">New</span>' : '');
+      item.addEventListener('click', () => loadBackendFile(file, owner, repo));
+      listEl.appendChild(item);
+    });
+
+    loadingEl.style.display = 'none';
+    listEl.style.display    = 'flex';
+  } catch (err) {
+    loadingEl.style.display = 'none';
+    errorMsg.textContent    = err.message;
+    errorEl.style.display   = 'flex';
+  }
+}
+
+async function loadBackendFile(file, owner, repo) {
+  closeBackendModal();
+  document.getElementById('spinner').style.display = 'block';
+  try {
+    let text;
+
+    if (file.download_url) {
+      const res = await fetch(file.download_url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      text = await res.text();
+    } else {
+      const res = await fetch(file.url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      text = atob(data.content.replace(/\s/g, ''));
+    }
+
+    let json;
+    try { json = JSON.parse(text); }
+    catch {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) json = JSON.parse(match[0]);
+      else throw new Error('Could not parse JSON');
+    }
+
+    const entry = (json.entries && json.entries[0]) || json;
+    document.getElementById('dateInput').value = entry.date || '';
+    blocks = (entry.content || []).map(b => deepClone(b));
+    renderEditor();
+    renderPreview();
+    showSnack('Loaded ' + file.name + ' from ' + owner + '/' + repo);
+  } catch (err) {
+    showSnack('Failed to load: ' + err.message, 'error');
+  } finally {
+    document.getElementById('spinner').style.display = 'none';
+  }
+}
+
+function renderEditor() {
+  const list = document.getElementById('blockList');
+  list.innerHTML = '';
+  blocks.forEach((block, idx) => {
+    list.appendChild(buildBlockCard(block, idx));
+  });
+}
+
+function buildBlockCard(block, idx) {
+  const card = document.createElement('div');
+  card.className = 'block-card';
+  card.draggable = true;
+  card.dataset.idx = idx;
+  setupDrag(card, idx);
+  const preview = getBlockPreview(block);
+  card.innerHTML =
+    '<div class="block-header">' +
+      '<span class="block-type-badge type-' + block.type + '">' + block.type + '</span>' +
+      '<span class="block-preview-text">' + escHtml(preview) + '</span>' +
+      '<div class="block-actions">' +
+        '<button class="icon-btn" title="Move up" onclick="moveBlock(' + idx + ',-1)"><span class="material-icons-round">arrow_upward</span></button>' +
+        '<button class="icon-btn" title="Move down" onclick="moveBlock(' + idx + ',1)"><span class="material-icons-round">arrow_downward</span></button>' +
+        '<button class="icon-btn delete" title="Delete" onclick="deleteBlock(' + idx + ')"><span class="material-icons-round">delete</span></button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="block-body">' + buildBlockFields(block, idx) + '</div>';
+  return card;
+}
+
+function getBlockPreview(block) {
+  if (block.type === 'spacer') return '(spacer)';
+  if (block.type === 'hr') return '----------';
+  if (block.type === 'image') return block.src || '(no url)';
+  if (block.type === 'ul' || block.type === 'ol') return (block.items || []).join(' / ').slice(0, 60) || '(empty)';
+  return (block.text || '').slice(0, 70) || '(empty)';
+}
+
+function buildBlockFields(block, idx) {
+  const type = block.type;
+  if (type === 'spacer' || type === 'hr') {
+    return '<span style="font-size:12px;color:var(--md-sys-color-on-surface-variant);opacity:0.6;">No settings for this block.</span>';
+  }
+  if (type === 'image') {
+    return '<div><div class="field-label">Image URL</div>' +
+      '<input class="inline-field mono" value="' + escAttr(block.src || '') + '" placeholder="https://..." oninput="updateField(' + idx + ',\'src\',this.value)"></div>' +
+      '<div><div class="field-label">Alt text (optional)</div>' +
+      '<input class="inline-field" value="' + escAttr(block.alt || '') + '" placeholder="Describe the image..." oninput="updateField(' + idx + ',\'alt\',this.value)"></div>';
+  }
+  if (type === 'ul' || type === 'ol') {
+    const items = block.items || [];
+    let itemRows = '';
+    items.forEach((item, i) => {
+      itemRows +=
+        '<div class="list-item-row" data-item="' + i + '">' +
+          '<span class="material-icons-round drag-handle">drag_indicator</span>' +
+          '<textarea class="inline-field" rows="1" oninput="updateListItem(' + idx + ',' + i + ',this.value);autoResize(this)" onkeydown="listItemKeydown(event,' + idx + ',' + i + ')">' + escHtml(item) + '</textarea>' +
+          '<button class="icon-btn delete" onclick="removeListItem(' + idx + ',' + i + ')"><span class="material-icons-round" style="font-size:14px;">close</span></button>' +
+        '</div>';
+    });
+    return '<div class="list-items" id="listitems-' + idx + '">' + itemRows + '</div>' +
+      '<button class="add-item-btn" onclick="addListItem(' + idx + ')"><span class="material-icons-round">add</span> Add item</button>' +
+      '<div style="font-size:11px;color:var(--md-sys-color-on-surface-variant);opacity:0.7;margin-top:2px;">Supports **bold**, *italic*, `code`, [link](url)</div>';
+  }
+  const placeholder = {
+    h1: 'Heading 1 text...',
+    h2: 'Heading 2 text...',
+    h3: 'Heading 3 text...',
+    paragraph: 'Paragraph text... supports **bold**, *italic*, `code`, [link](url)',
+    blockquote: 'Quoted text...'
+  }[type] || '';
+  const rows = (type === 'paragraph' || type === 'blockquote') ? 3 : 1;
+  return '<textarea class="inline-field" rows="' + rows + '" placeholder="' + escAttr(placeholder) + '" oninput="updateField(' + idx + ',\'text\',this.value);autoResize(this)">' + escHtml(block.text || '') + '</textarea>' +
+    ((type === 'paragraph' || type === 'blockquote') ? '<div style="font-size:11px;color:var(--md-sys-color-on-surface-variant);opacity:0.7;">Supports **bold**, *italic*, `code`, [link](url)</div>' : '');
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function addBlock(type) {
+  const defaults = {
+    h1: { type: 'h1', text: '' },
+    h2: { type: 'h2', text: '' },
+    h3: { type: 'h3', text: '' },
+    paragraph: { type: 'paragraph', text: '' },
+    ul: { type: 'ul', items: [''] },
+    ol: { type: 'ol', items: [''] },
+    image: { type: 'image', src: '', alt: '' },
+    blockquote: { type: 'blockquote', text: '' },
+    hr: { type: 'hr' },
+    spacer: { type: 'spacer' }
+  };
+  blocks.push(deepClone(defaults[type]));
+  renderEditor();
+  schedulePreview();
+  const scroll = document.getElementById('editorScroll');
+  setTimeout(() => scroll.scrollTop = scroll.scrollHeight, 50);
+}
+
+function deleteBlock(idx) {
+  blocks.splice(idx, 1);
+  renderEditor();
+  schedulePreview();
+}
+
+function moveBlock(idx, dir) {
+  const n = idx + dir;
+  if (n < 0 || n >= blocks.length) return;
+  [blocks[idx], blocks[n]] = [blocks[n], blocks[idx]];
+  renderEditor();
+  schedulePreview();
+}
+
+function updateField(idx, key, value) {
+  blocks[idx][key] = value;
+  schedulePreview();
+  const card = document.querySelector('[data-idx="' + idx + '"]');
+  if (card) {
+    const preview = card.querySelector('.block-preview-text');
+    if (preview) preview.textContent = getBlockPreview(blocks[idx]);
+  }
+}
+
+function updateListItem(idx, itemIdx, value) {
+  blocks[idx].items[itemIdx] = value;
+  schedulePreview();
+  const card = document.querySelector('[data-idx="' + idx + '"]');
+  if (card) {
+    const preview = card.querySelector('.block-preview-text');
+    if (preview) preview.textContent = getBlockPreview(blocks[idx]);
+  }
+}
+
+function addListItem(idx) {
+  blocks[idx].items = blocks[idx].items || [];
+  blocks[idx].items.push('');
+  renderEditor();
+  schedulePreview();
+  setTimeout(() => {
+    const items = document.querySelectorAll('#listitems-' + idx + ' textarea');
+    if (items.length) items[items.length - 1].focus();
+  }, 30);
+}
+
+function removeListItem(idx, itemIdx) {
+  blocks[idx].items.splice(itemIdx, 1);
+  renderEditor();
+  schedulePreview();
+}
+
+function listItemKeydown(e, idx, itemIdx) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    addListItem(idx);
+  }
+  if (e.key === 'Backspace' && e.target.value === '' && blocks[idx].items.length > 1) {
+    e.preventDefault();
+    removeListItem(idx, itemIdx);
+  }
+}
+
+function setupDrag(card, idx) {
+  card.addEventListener('dragstart', e => {
+    dragSrcIdx = idx;
+    card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    document.querySelectorAll('.block-card').forEach(c => c.style.borderColor = '');
+  });
+  card.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    card.style.borderColor = 'var(--md-sys-color-primary)';
+  });
+  card.addEventListener('dragleave', () => {
+    card.style.borderColor = '';
+  });
+  card.addEventListener('drop', e => {
+    e.preventDefault();
+    card.style.borderColor = '';
+    const destIdx = parseInt(card.dataset.idx);
+    if (dragSrcIdx === null || dragSrcIdx === destIdx) return;
+    const moved = blocks.splice(dragSrcIdx, 1)[0];
+    blocks.splice(destIdx, 0, moved);
+    dragSrcIdx = null;
+    renderEditor();
+    schedulePreview();
+  });
+}
+
+function schedulePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(renderPreview, 80);
+}
+
+function renderPreview() {
+  const inner = document.getElementById('previewInner');
+  const dateEl = document.getElementById('previewDate');
+  const date = document.getElementById('dateInput').value.trim();
+  dateEl.textContent = date;
+  dateEl.style.display = 'block';
+  while (inner.children.length > 1) inner.removeChild(inner.lastChild);
+  blocks.forEach(block => {
+    const el = renderPreviewBlock(block);
+    if (el) inner.appendChild(el);
+  });
+}
+
+function renderPreviewBlock(block) {
+  switch (block.type) {
+    case 'image': {
+      if (!block.src) return null;
+      const img = document.createElement('img');
+      img.src = block.src;
+      img.alt = block.alt || '';
+      img.className = 'pm-img';
+      img.loading = 'lazy';
+      return img;
+    }
+    case 'spacer': {
+      const s = document.createElement('span');
+      s.className = 'pm-spacer';
+      return s;
+    }
+    case 'h1': {
+      const el = document.createElement('h1');
+      el.className = 'pm-h1';
+      el.textContent = block.text || '';
+      return el;
+    }
+    case 'h2': {
+      const el = document.createElement('h2');
+      el.className = 'pm-h2';
+      el.textContent = block.text || '';
+      return el;
+    }
+    case 'h3': {
+      const el = document.createElement('h3');
+      el.className = 'pm-h3';
+      el.textContent = block.text || '';
+      return el;
+    }
+    case 'paragraph': {
+      const el = document.createElement('p');
+      el.className = 'pm-p';
+      el.innerHTML = renderInline(block.text || '');
+      return el;
+    }
+    case 'ul': {
+      const ul = document.createElement('ul');
+      ul.className = 'pm-ul';
+      (block.items || []).forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = renderInline(item);
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+    case 'ol': {
+      const ol = document.createElement('ol');
+      ol.className = 'pm-ol';
+      (block.items || []).forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = renderInline(item);
+        ol.appendChild(li);
+      });
+      return ol;
+    }
+    case 'hr': {
+      const hr = document.createElement('hr');
+      hr.className = 'pm-hr';
+      return hr;
+    }
+    case 'blockquote': {
+      const bq = document.createElement('blockquote');
+      bq.className = 'pm-blockquote';
+      bq.innerHTML = renderInline(block.text || '');
+      return bq;
+    }
+    default: return null;
+  }
+}
+
+function renderInline(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code class="pm-code">$1</code>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" style="color:inherit;text-decoration:underline;opacity:0.8;">$1</a>');
+}
+
+document.getElementById('dateInput').addEventListener('input', schedulePreview);
+
+function loadFile() {
+  document.getElementById('fileInput').click();
+}
+
+function handleFileLoad(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const json = JSON.parse(ev.target.result);
+      const entry = (json.entries && json.entries[0]) || json;
+      document.getElementById('dateInput').value = entry.date || '';
+      blocks = (entry.content || []).map(b => deepClone(b));
+      renderEditor();
+      renderPreview();
+      showSnack('Loaded successfully');
+    } catch (err) {
+      showSnack('Invalid JSON: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function generateJSON() {
+  const date = document.getElementById('dateInput').value.trim();
+  const entry = { date, content: blocks };
+  return JSON.stringify({ entries: [entry] }, null, 2);
+}
+
+async function copyJSON() {
+  const json = generateJSON();
+  try {
+    await navigator.clipboard.writeText(json);
+    showSnack('JSON copied to clipboard!');
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = json;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showSnack('JSON copied to clipboard!');
+  }
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showSnack(msg, type) {
+  const snack = document.getElementById('snackbar');
+  const icon = snack.querySelector('.material-icons-round');
+  document.getElementById('snackMsg').textContent = msg;
+  icon.textContent = type === 'error' ? 'error' : 'check_circle';
+  icon.style.color = type === 'error' ? 'var(--md-sys-color-error)' : 'var(--md-sys-color-primary)';
+  snack.classList.add('show');
+  clearTimeout(snackTimer);
+  snackTimer = setTimeout(() => snack.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
